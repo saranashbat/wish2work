@@ -2,6 +2,8 @@
 const express = require('express');
 const { connectToDB } = require('./config/db');
 const programRoutes = require('./routes/programRoutes'); // Import routes
+const departmentRoutes = require('./routes/departmentRoutes'); // Import routes
+const courseRoutes = require('./routes/courseRoutes'); // Import the course routes
 
 const app = express();
 
@@ -12,6 +14,13 @@ connectToDB();
 
 // Use the program routes
 app.use('/api', programRoutes); // All program routes will start with '/api'
+
+// Use the department routes
+app.use('/api', departmentRoutes);
+
+// Use the course routes
+app.use('/api', courseRoutes); 
+
 
 // Default route
 app.get('/', (req, res) => {
