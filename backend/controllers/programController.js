@@ -1,4 +1,4 @@
-
+// controllers/programController.js
 const ProgramOfStudy = require('../models/programOfStudy');
 
 // GET: Get all programs
