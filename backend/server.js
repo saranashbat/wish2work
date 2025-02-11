@@ -7,6 +7,7 @@ const courseRoutes = require('./routes/courseRoutes'); // Import the course rout
 const studentRoutes = require('./routes/studentRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const availabilityRoutes = require('./routes/availabilityRoutes'); // Import availability routes
+const skillRoutes = require('./routes/skillRoutes');
 
 
 
@@ -17,24 +18,19 @@ app.use(express.json()); // Middleware to parse JSON requests
 // Test the DB connection on server start
 connectToDB();
 
-// Use the program routes
-app.use('/api', programRoutes); // All program routes will start with '/api'
+app.use('/api', programRoutes); 
 
-// Use the department routes
 app.use('/api', departmentRoutes);
 
-// Use the course routes
 app.use('/api', courseRoutes); 
 
-// Use the student routes
 app.use('/api', studentRoutes);
 
-// Use the staff routes
 app.use('/api', staffRoutes);
 
-// Use the availability routes
 app.use('/api', availabilityRoutes); 
 
+app.use('/api', skillRoutes);
 
 // Default route
 app.get('/', (req, res) => {
