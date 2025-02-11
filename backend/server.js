@@ -4,6 +4,8 @@ const { connectToDB } = require('./config/db');
 const programRoutes = require('./routes/programRoutes'); // Import routes
 const departmentRoutes = require('./routes/departmentRoutes'); // Import routes
 const courseRoutes = require('./routes/courseRoutes'); // Import the course routes
+const studentRoutes = require('./routes/studentRoutes');
+
 
 const app = express();
 
@@ -21,11 +23,16 @@ app.use('/api', departmentRoutes);
 // Use the course routes
 app.use('/api', courseRoutes); 
 
+// Use the student routes
+app.use('/api', studentRoutes);
+
 
 // Default route
 app.get('/', (req, res) => {
   res.send('Hello from the backend!');
 });
+
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
