@@ -6,6 +6,8 @@ const departmentRoutes = require('./routes/departmentRoutes'); // Import routes
 const courseRoutes = require('./routes/courseRoutes'); // Import the course routes
 const studentRoutes = require('./routes/studentRoutes');
 const staffRoutes = require('./routes/staffRoutes');
+const availabilityRoutes = require('./routes/availabilityRoutes'); // Import availability routes
+
 
 
 const app = express();
@@ -29,6 +31,9 @@ app.use('/api', studentRoutes);
 
 // Use the staff routes
 app.use('/api', staffRoutes);
+
+// Use the availability routes
+app.use('/api', availabilityRoutes); 
 
 
 // Default route

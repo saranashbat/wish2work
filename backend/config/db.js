@@ -27,5 +27,15 @@ const connectToDB = async () => {
   }
 };
 
+setInterval(async () => {
+  try {
+    await sequelize.query('SELECT 1');
+    console.log('Database kept alive');
+  } catch (error) {
+    console.error('Failed to keep database alive:', error);
+  }
+}, 300000);
+
+
 // Export the sequelize instance and the connect function
 module.exports = { sequelize, connectToDB };
