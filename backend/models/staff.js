@@ -1,14 +1,14 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db'); // Import the Sequelize instance
 
-const Student = sequelize.define('Student', {
-  student_id: {
+const Staff = sequelize.define('Staff', {
+  staff_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
     autoIncrement: true,
   },
-  program_id: {
+  department_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -26,14 +26,6 @@ const Student = sequelize.define('Student', {
   },
   phone_number: {
     type: DataTypes.INTEGER, 
-    allowNull: false,
-  },
-  personal_description: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-  },
-  average_rating: {
-    type: DataTypes.DECIMAL,
     allowNull: true,
   },
   is_active: {
@@ -51,8 +43,8 @@ const Student = sequelize.define('Student', {
     defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
   },
 }, {
-  tableName: 'student',
+  tableName: 'staff',
   timestamps: false, // Disable automatic timestamp fields creation
 });
 
-module.exports = Student;
+module.exports = Staff;

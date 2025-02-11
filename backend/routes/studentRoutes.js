@@ -18,4 +18,11 @@ router.put('/students/:id', studentController.updateStudent);
 // Delete a student by ID
 router.delete('/students/:id', studentController.deleteStudent);
 
+// Activate student route
+router.patch('/students/:id/activate', studentController.activateStudent);
+
+// Deactivate student route
+router.patch('/students/:id/deactivate', studentController.deactivateStudent);
+
+
 module.exports = router;

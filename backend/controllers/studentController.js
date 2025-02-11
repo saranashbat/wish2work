@@ -72,3 +72,40 @@ exports.deleteStudent = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Activate student
+exports.activateStudent = async (req, res) => {
+  try {
+    const [updated] = await Student.update(
+      { is_active: true }, // Set is_active to true for activation
+      { where: { student_id: req.params.id } }
+    );
+
+    if (updated) {
+      res.status(200).json({ message: 'Student activated successfully' });
+    } else {
+      res.status(404).json({ message: 'Student not found' });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Deactivate student
+exports.deactivateStudent = async (req, res) => {
+  try {
+    const [updated] = await Student.update(
+      { is_active: false }, // Set is_active to false for deactivation
+      { where: { student_id: req.params.id } }
+    );
+
+    if (updated) {
+      res.status(200).json({ message: 'Student deactivated successfully' });
+    } else {
+      res.status(404).json({ message: 'Student not found' });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
