@@ -8,6 +8,7 @@ const studentRoutes = require('./routes/studentRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const availabilityRoutes = require('./routes/availabilityRoutes'); // Import availability routes
 const skillRoutes = require('./routes/skillRoutes');
+const studentCourseRoutes = require('./routes/studentCourseRoutes');
 
 
 
@@ -31,6 +32,9 @@ app.use('/api', staffRoutes);
 app.use('/api', availabilityRoutes); 
 
 app.use('/api', skillRoutes);
+
+app.use('/api', studentCourseRoutes);
+
 
 // Default route
 app.get('/', (req, res) => {
