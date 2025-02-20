@@ -60,6 +60,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'wish2work-backend'  # Ensure this matches your actual backend app name in Azure
+          app-name: 'wish2work'  # Ensure this matches your actual backend app name in Azure
           slot-name: 'Production'
           package: ./backend
