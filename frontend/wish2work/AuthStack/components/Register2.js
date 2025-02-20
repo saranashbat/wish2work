@@ -13,10 +13,10 @@ const Register2 = ({ route, navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [department, setDepartment] = useState('');
   const [major, setMajor] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');  // New state for phone number
   const [departments, setDepartments] = useState([]);
   const [majors, setMajors] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchDepartments();
@@ -30,49 +30,68 @@ const Register2 = ({ route, navigation }) => {
 
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get('http://192.168.56.1:5000/api/departments');
+      const response = await axios.get('https://wish2work.onrender.com/api/departments');
       const filteredDepartments = response.data.filter(dept => dept.department_id >= 4 && dept.department_id <= 8);
       setDepartments(filteredDepartments);
-      setError(''); // Clear error after successful fetch
     } catch (err) {
-      setError('Failed to load departments');
+      alert('Failed to load departments');
     }
   };
 
   const fetchMajors = async (departmentId) => {
     try {
-      const response = await axios.get(`http://192.168.56.1:5000/api/departments/${departmentId}/programs`);
+      const response = await axios.get(`https://wish2work.onrender.com/api/departments/${departmentId}/programs`);
       setMajors(response.data);
-      setError(''); // Clear error after successful fetch
     } catch (err) {
-      setError('Failed to load majors');
+      alert('Failed to load majors');
     }
   };
 
   const handleRegistration = async () => {
-    setError('');  // Reset error message on every registration attempt
-
-    if (!password || !confirmPassword || !department || !major) {
-      setError('All fields are required');
+    if (!password || !confirmPassword || !department || !major || !phoneNumber) {  // Check if phone number is provided
+      alert('All fields are required');
       return;
     }
-
+  
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      alert('Passwords do not match');
       return;
     }
-
+  
     setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      // Step 1: Create the user in Firebase
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user; // Get user object from Firebase
+  
+      // Step 2: Prepare student data for the database
+      const studentData = {
+        student_id: studentId,        // studentId passed from the route params
+        program_id: major,            // major is the selected program
+        first_name: firstName,        // firstName passed from route params
+        last_name: lastName,          // lastName passed from route params
+        email: email,                 // email passed from route params
+        phone_number: phoneNumber,    // Added phone number to the student data
+        personal_description: null,   // Assuming no personal description is entered
+        average_rating: null,         // Assuming default null rating
+        is_active: true,              // Assuming the student is active by default
+        created_at: new Date().toISOString(), // Current timestamp for created_at
+        updated_at: new Date().toISOString(), // Current timestamp for updated_at
+      };
+  
+      // Step 3: Add the student to the database after successful Firebase registration
+      await axios.post('https://wish2work.onrender.com/api/students', studentData);
+  
+      // Step 4: Navigate to the Login screen after successful registration
+      alert('Registration Successful!');
       navigation.navigate('Login');
-      setError(''); // Clear error after successful registration
     } catch (err) {
-      setError(err.message);
+      alert(err.message);
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false after the process is completed
     }
   };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -86,7 +105,6 @@ const Register2 = ({ route, navigation }) => {
       </View>
 
       <Text style={styles.title}>Complete Registration</Text>
-      {error ? <Text style={styles.error}>{error}</Text> : null}
 
       {/* Department Selector */}
       <ModalSelector
@@ -122,6 +140,15 @@ const Register2 = ({ route, navigation }) => {
           />
         </ModalSelector>
       ) : null}
+
+      {/* Phone Number Input */}
+      <TextInput 
+        style={styles.input} 
+        placeholder="Phone Number" 
+        value={phoneNumber} 
+        onChangeText={(text) => setPhoneNumber(text.replace(/[^0-9]/g, ''))}  // Allow only numbers
+        keyboardType="numeric"  // Set keyboard to numeric for phone number input
+      />
 
       <TextInput 
         style={styles.input} 
@@ -197,12 +224,6 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04, 
     fontWeight: 'bold' 
   },
-  error: { 
-    color: 'red', 
-    textAlign: 'center', 
-    marginBottom: height * 0.02 
-  },
 });
-
 
 export default Register2;

@@ -17,8 +17,8 @@ const StudentTabNav = () => {
     <SafeAreaView style={styles.container}>
       <Tab.Navigator
         screenOptions={{
-          tabBarActiveTintColor: '#FCA34D',
-          tabBarInactiveTintColor: '#1C4A97',
+          tabBarActiveTintColor: '#7A9FD9',
+          tabBarInactiveTintColor: '#130160',
           tabBarStyle: {
             backgroundColor: '#F2F7FA',
             height: 75, // Fixed tab height
