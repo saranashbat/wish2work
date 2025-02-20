@@ -11,11 +11,11 @@ const skillRoutes = require('./routes/skillRoutes');
 const studentCourseRoutes = require('./routes/studentCourseRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const cors = require('cors');
-app.use(cors()); // Enable CORS for all routes
 
 
 
 const app = express();
+app.use(cors()); // Enable CORS for all routes
 
 app.use(express.json()); // Middleware to parse JSON requests
 
