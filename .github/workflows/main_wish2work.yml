@@ -1,0 +1,70 @@
+name: Build and deploy Node.js app to Azure Web App - wish2work
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read # This is required for actions/checkout
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies, build, and test for backend
+        run: |
+          cd backend
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-app
+          path: ./backend
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write # This is required for requesting the JWT
+      contents: read # This is required for actions/checkout
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-app
+          path: ./backend # Ensure the downloaded files are placed in the backend folder
+
+      - name: List downloaded artifact files (for debugging)
+        run: |
+          ls -R ./backend # This helps check that files are being downloaded correctly
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_1E074C5C320B4D199121886AA6849B8F }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B0B45FE33E654351A213E861E8BF8DBE }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6A9C6B7CB9F34AFF968F7DB734D0D29E }}
+
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
+        with:
+          app-name: 'wish2work'  # Ensure this matches your actual backend app name in Azure
+          slot-name: 'Production'
+          package: ./backend  # Ensure this points to the correct backend directory after artifact download
