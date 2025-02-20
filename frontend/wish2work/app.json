@@ -29,6 +29,12 @@
         "projectId": "fbea500b-fc0d-49ac-a67f-6e9e84d4378d"
       }
     },
-    "owner": "saranashbat"
+    "owner": "saranashbat",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/fbea500b-fc0d-49ac-a67f-6e9e84d4378d"
+    }
   }
 }

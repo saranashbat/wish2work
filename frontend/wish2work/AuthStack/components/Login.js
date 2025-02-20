@@ -30,7 +30,7 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
    <Image
         source={require('../../assets/logo.png')}  // Replace with the local image path
         style={styles.image}
@@ -62,7 +62,7 @@ const Login = ({ navigation }) => {
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={styles.linkText}>Don't have an account? Register</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
