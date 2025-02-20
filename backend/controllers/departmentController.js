@@ -1,5 +1,7 @@
 
 const Department = require('../models/department');
+const ProgramOfStudy = require('../models/programOfStudy'); // Import Program Model
+
 
 // Get all departments
 const getDepartments = async (req, res) => {
@@ -67,10 +69,30 @@ const deleteDepartment = async (req, res) => {
   }
 };
 
+// Get programs by department ID
+const getProgramsByDepartmentId = async (req, res) => {
+  const departmentId = parseInt(req.params.id, 10); // Convert to number
+
+  if (isNaN(departmentId)) {
+    return res.status(400).json({ message: 'Invalid department ID' });
+  }
+
+  try {
+    const programs = await ProgramOfStudy.findAll({
+      where: { department_id: departmentId }
+    });
+
+    res.json(programs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getDepartments,
   getDepartmentById,
   createDepartment,
   updateDepartment,
   deleteDepartment,
+  getProgramsByDepartmentId
 };

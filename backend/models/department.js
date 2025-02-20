@@ -17,10 +17,7 @@ const Department = sequelize.define('Department', {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  abbrev: {
-    type: DataTypes.STRING(100),
-    allowNull: true,
-  },
+  
 }, {
   timestamps: false, 
   tableName: 'department', 
