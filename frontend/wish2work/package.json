@@ -18,16 +18,18 @@
     "axios": "^1.7.9",
     "expo": "~52.0.32",
     "expo-status-bar": "~2.0.1",
+    "expo-updates": "~0.26.19",
     "firebase": "^11.3.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.7",
     "react-native-auth0": "^4.3.0",
+    "react-native-modal-selector": "^2.1.2",
     "react-native-paper": "^5.13.1",
+    "react-native-picker-select": "^9.3.1",
     "react-native-safe-area-context": "^5.2.0",
     "react-native-screens": "^4.6.0",
-    "react-native-web": "~0.19.13",
-    "expo-updates": "~0.26.19"
+    "react-native-web": "~0.19.13"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

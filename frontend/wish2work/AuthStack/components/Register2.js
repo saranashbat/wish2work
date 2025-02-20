@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView, Dimensions, Image } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import ModalSelector from 'react-native-modal-selector';
 import { auth } from '../../config/auth';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import axios from 'axios';
@@ -22,11 +22,18 @@ const Register2 = ({ route, navigation }) => {
     fetchDepartments();
   }, []);
 
+  useEffect(() => {
+    if (department) {
+      fetchMajors(department);
+    }
+  }, [department]);
+
   const fetchDepartments = async () => {
     try {
       const response = await axios.get('http://192.168.56.1:5000/api/departments');
       const filteredDepartments = response.data.filter(dept => dept.department_id >= 4 && dept.department_id <= 8);
       setDepartments(filteredDepartments);
+      setError(''); // Clear error after successful fetch
     } catch (err) {
       setError('Failed to load departments');
     }
@@ -36,17 +43,20 @@ const Register2 = ({ route, navigation }) => {
     try {
       const response = await axios.get(`http://192.168.56.1:5000/api/departments/${departmentId}/programs`);
       setMajors(response.data);
+      setError(''); // Clear error after successful fetch
     } catch (err) {
       setError('Failed to load majors');
     }
   };
 
   const handleRegistration = async () => {
-    setError('');
+    setError('');  // Reset error message on every registration attempt
+
     if (!password || !confirmPassword || !department || !major) {
       setError('All fields are required');
       return;
     }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -56,6 +66,7 @@ const Register2 = ({ route, navigation }) => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       navigation.navigate('Login');
+      setError(''); // Clear error after successful registration
     } catch (err) {
       setError(err.message);
     } finally {
@@ -70,41 +81,62 @@ const Register2 = ({ route, navigation }) => {
         <Image
           source={require('../../assets/logo.png')} // Path to logo image
           style={styles.logo}
+          resizeMode="contain"
         />
       </View>
 
       <Text style={styles.title}>Complete Registration</Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={department}
-          onValueChange={(value) => {
-            setDepartment(value);
-            fetchMajors(value);
-          }}
-          style={styles.pickerInner}
-        >
-          <Picker.Item label="Select Department" value="" color="#888" />
-          {departments.map((dept) => (
-            <Picker.Item key={dept.department_id} label={dept.name} value={dept.department_id} />
-          ))}
-        </Picker>
-      </View>
+      {/* Department Selector */}
+      <ModalSelector
+        data={departments.map((dept) => ({ key: dept.department_id, label: dept.name }))} 
+        initValue="Select Department..."
+        onChange={(option) => {
+          setDepartment(option.key);
+          fetchMajors(option.key);
+        }}
+        style={styles.modalSelector}
+        cancelText="Cancel"
+      >
+        <TextInput 
+          style={styles.input}
+          value={departments.find(d => d.department_id === department)?.name || 'Select Department...'}
+          editable={false}
+        />
+      </ModalSelector>
 
+      {/* Major Selector */}
       {department ? (
-        <View style={styles.pickerWrapper}>
-          <Picker selectedValue={major} onValueChange={setMajor} style={styles.pickerInner}>
-            <Picker.Item label="Select Major" value="" color="#888" />
-            {majors.map((prog) => (
-              <Picker.Item key={prog.program_id} label={prog.name} value={prog.program_id} />
-            ))}
-          </Picker>
-        </View>
+        <ModalSelector
+          data={majors.map((prog) => ({ key: prog.program_id, label: prog.name }))} 
+          initValue="Select Major..."
+          onChange={(option) => setMajor(option.key)}
+          style={styles.modalSelector}
+          cancelText="Cancel"
+        >
+          <TextInput 
+            style={styles.input}
+            value={majors.find(m => m.program_id === major)?.name || 'Select Major...'}
+            editable={false}
+          />
+        </ModalSelector>
       ) : null}
 
-      <TextInput style={styles.input} placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
-      <TextInput style={styles.input} placeholder="Confirm Password" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
+      <TextInput 
+        style={styles.input} 
+        placeholder="Password" 
+        secureTextEntry 
+        value={password} 
+        onChangeText={setPassword} 
+      />
+      <TextInput 
+        style={styles.input} 
+        placeholder="Confirm Password" 
+        secureTextEntry 
+        value={confirmPassword} 
+        onChangeText={setConfirmPassword} 
+      />
 
       <TouchableOpacity style={styles.button} onPress={handleRegistration} disabled={loading}>
         {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Register</Text>}
@@ -121,38 +153,56 @@ const Register2 = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: { flexGrow: 1, justifyContent: 'center', padding: width * 0.05 },
   logoContainer: { alignItems: 'center', marginBottom: height * 0.02 },
-  logo: { width: width * 0.7, height: width * 0.3, alignSelf: 'center', marginBottom: height * 0.05 },
-  title: { fontSize: width * 0.07, fontWeight: 'bold', marginBottom: height * 0.02, textAlign: 'center' },
-  input: { height: height * 0.07, borderWidth: 1, borderColor: '#ccc', borderRadius: 8, paddingHorizontal: width * 0.03, marginBottom: height * 0.02 },
-  pickerWrapper: {
-    height: height * 0.07,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+  logo: { width: '100%', height: width * 0.3, marginBottom: height * 0.05 },
+  title: { fontSize: width * 0.08, fontWeight: 'bold', marginBottom: height * 0.02, textAlign: 'center' },
+  input: {
+    height: height * 0.07, 
+    paddingHorizontal: width * 0.03, 
     marginBottom: height * 0.02,
-    overflow: 'hidden', // Ensures the border-radius is applied
-    backgroundColor: '#fff', // Ensure the background is white
+    borderRadius: 8, 
+    backgroundColor: 'transparent',
+    borderWidth: 1,  // Add border to input boxes
+    borderColor: '#ccc',  // Add border color for input fields
   },
-  pickerInner: {
-    height: '100%', // Ensure Picker takes full height of wrapper
-    width: '100%',
+  modalSelector: {
+    height: height * 0.07,
+    paddingHorizontal: width * 0.003,
+    marginBottom: height * 0.02,
+    borderRadius: 8, 
+    backgroundColor: 'white', 
+    borderColor: '#ccc',  // Add border color to modal selector
   },
-  button: { backgroundColor: '#130160', paddingVertical: height * 0.02, borderRadius: 8, alignItems: 'center', marginBottom: height * 0.02 },
-  buttonText: { color: '#fff', fontSize: width * 0.05, fontWeight: 'bold' },
+  button: {
+    backgroundColor: '#130160', 
+    paddingVertical: height * 0.02, 
+    borderRadius: 8, 
+    alignItems: 'center', 
+    marginBottom: height * 0.02 
+  },
+  buttonText: { 
+    color: '#fff', 
+    fontSize: width * 0.05, 
+    fontWeight: 'bold' 
+  },
   backButton: { 
     backgroundColor: '#888', 
     paddingVertical: height * 0.015, 
     paddingHorizontal: width * 0.05, 
     borderRadius: 8, 
-    alignSelf: 'flex-start', // Align to the left
-    marginTop: height * 0.01, // Small space from Register button
+    alignSelf: 'flex-start', 
+    marginTop: height * 0.01, 
   },
   backButtonText: { 
     color: '#fff', 
     fontSize: width * 0.04, 
     fontWeight: 'bold' 
   },
-  error: { color: 'red', textAlign: 'center', marginBottom: height * 0.02 },
+  error: { 
+    color: 'red', 
+    textAlign: 'center', 
+    marginBottom: height * 0.02 
+  },
 });
+
 
 export default Register2;
