@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
+import ProfileStack from './ProfileStack/ProfileStack';
+
 
 // Placeholder screens for the tabs (to be replaced with actual components)
 const PlaceholderScreen = ({ name }) => (
@@ -61,7 +63,7 @@ const StudentTabNav = () => {
         />
         <Tab.Screen
           name="Profile"
-          component={() => <PlaceholderScreen name="Profile" />}
+          component={ProfileStack}
           options={{
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="account" color={color} size={35} />

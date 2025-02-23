@@ -10,7 +10,7 @@ export const getUserRole = async (userId) => {
     if (userDoc.exists()) {
       return userDoc.data().role;  // Assuming role is stored as a field in the user document
     } else {
-      console.log('No user found.');
+      console.log('No user found!!');
       return null;
     }
   } catch (error) {

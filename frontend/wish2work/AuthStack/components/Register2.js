@@ -4,6 +4,8 @@ import ModalSelector from 'react-native-modal-selector';
 import { auth } from '../../config/auth';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import axios from 'axios';
+import { doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
+import { db } from '../../config/auth'; // Assuming you have a Firebase config file with Firestore initialized
 
 const { width, height } = Dimensions.get('window');
 
@@ -82,7 +84,10 @@ const Register2 = ({ route, navigation }) => {
       // Step 3: Add the student to the database after successful Firebase registration
       await axios.post('https://wish2work.onrender.com/api/students', studentData);
   
-      // Step 4: Navigate to the Login screen after successful registration
+      // Step 4: Add the user's role to the 'user_role' collection in Firestore
+      await setDoc(doc(db, 'user_role', user.uid), { role: 'student' });
+
+      // Step 5: Navigate to the Login screen after successful registration
       alert('Registration Successful!');
       navigation.navigate('Login');
     } catch (err) {
@@ -153,14 +158,14 @@ const Register2 = ({ route, navigation }) => {
       <TextInput 
         style={styles.input} 
         placeholder="Password" 
-        secureTextEntry 
+        secureTextEntry
         value={password} 
         onChangeText={setPassword} 
       />
       <TextInput 
         style={styles.input} 
         placeholder="Confirm Password" 
-        secureTextEntry 
+        secureTextEntry
         value={confirmPassword} 
         onChangeText={setConfirmPassword} 
       />

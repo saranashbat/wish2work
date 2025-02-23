@@ -14,27 +14,42 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      setLoading(true);
+
       if (user) {
         try {
+          // Fetch the role only after the user is authenticated
           const role = await getUserRole(user.uid);
-          setUserRole(role);
-          setIsAuthenticated(true);
-          console.log(role)
+
+          if (role) {
+            setUserRole(role);
+            setIsAuthenticated(true);
+            console.log(`User role: ${role}`);
+          } else {
+            console.log('No role found for user');
+            setUserRole(null);
+            setIsAuthenticated(false);
+          }
         } catch (error) {
-          console.error('Error in role-based routing:', error);
+          console.error('Error fetching role:', error);
+          setUserRole(null);
+          setIsAuthenticated(false);
         }
       } else {
+        // If no user is authenticated, stay on the Auth stack
         setIsAuthenticated(false);
         setUserRole(null);
       }
-      setLoading(false);
+
+      setLoading(false);  // Stop loading after auth state and role fetching is complete
     });
 
-    return unsubscribe;
+    return unsubscribe;  // Clean up the listener on component unmount
   }, []);
 
+  // If still loading, show a loading screen (spinner, etc.)
   if (loading) {
-    return null; // Add a loading spinner or splash screen here
+    return <></>;  // You can replace this with a loading spinner if needed
   }
 
   return (
@@ -47,7 +62,7 @@ export default function App() {
         ) : userRole === 'admin' ? (
           <AdminTabs />
         ) : (
-          <AuthStack />  // Fallback in case of an unknown role
+          <AuthStack />  // Fallback if an unknown role is returned
         )
       ) : (
         <AuthStack />
