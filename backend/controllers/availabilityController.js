@@ -1,6 +1,7 @@
 // controllers/availabilityController.js
 const Availability = require('../models/availability');
 
+// Get all availability entries
 exports.getAllAvailability = async (req, res) => {
   try {
     const availability = await Availability.findAll();
@@ -10,6 +11,7 @@ exports.getAllAvailability = async (req, res) => {
   }
 };
 
+// Get availability by specific ID
 exports.getAvailabilityById = async (req, res) => {
   try {
     const availability = await Availability.findByPk(req.params.id);
@@ -23,17 +25,40 @@ exports.getAvailabilityById = async (req, res) => {
   }
 };
 
+// Create a new availability entry
 exports.createAvailability = async (req, res) => {
   try {
-    const newAvailability = await Availability.create(req.body);
+    // Ensure start_time and end_time are valid
+    const { student_id, availability_date, start_time, end_time } = req.body;
+
+    // Validate if the times are provided and correct
+    if (!start_time || !end_time || !availability_date || !student_id) {
+      return res.status(400).json({ error: 'Missing required fields: start_time, end_time, availability_date, or student_id' });
+    }
+
+    const newAvailability = await Availability.create({
+      student_id,
+      availability_date,
+      start_time,
+      end_time
+    });
+
     res.status(201).json(newAvailability);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
+// Update an existing availability entry
 exports.updateAvailability = async (req, res) => {
   try {
+    const { start_time, end_time, availability_date, student_id } = req.body;
+
+    // Ensure valid data
+    if (!start_time || !end_time || !availability_date || !student_id) {
+      return res.status(400).json({ error: 'Missing required fields: start_time, end_time, availability_date, or student_id' });
+    }
+
     const [updated] = await Availability.update(req.body, {
       where: { availability_id: req.params.id }
     });
@@ -48,6 +73,7 @@ exports.updateAvailability = async (req, res) => {
   }
 };
 
+// Delete an availability entry
 exports.deleteAvailability = async (req, res) => {
   try {
     const deleted = await Availability.destroy({

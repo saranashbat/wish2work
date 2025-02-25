@@ -10,6 +10,7 @@ export default function AvailabilityScreen({ route, navigation }) {
   const [availability, setAvailability] = useState({});
   const [showPicker, setShowPicker] = useState(null);
   const [weekDates, setWeekDates] = useState([]);
+  const [localAvailability, setLocalAvailability] = useState({}); // Local availability for temporary saving
 
   useEffect(() => {
     const today = new Date();
@@ -22,9 +23,9 @@ export default function AvailabilityScreen({ route, navigation }) {
     try {
       const response = await axios.get(`https://wish2work.onrender.com/api/students/${studentId}/availability`);
       const data = response.data;
-      
+
       console.log("API Response:", data); // Log the data to inspect the response format
-      
+
       // Check if data is an array
       if (Array.isArray(data)) {
         const formattedData = {};
@@ -33,7 +34,7 @@ export default function AvailabilityScreen({ route, navigation }) {
           if (!formattedData[key]) formattedData[key] = [];
           formattedData[key].push({ start: new Date(availability_date) });
         });
-  
+
         setAvailability(formattedData);
       } else {
         throw new Error("Expected an array but received something else.");
@@ -43,19 +44,22 @@ export default function AvailabilityScreen({ route, navigation }) {
       Alert.alert("Error", "Failed to load availability.");
     }
   };
-  
 
-  const addTimeSlot = (date, start, end) => {
+  const addTimeSlotLocally = (date, start, end) => {
     const key = format(date, "yyyy-MM-dd");
-    setAvailability((prev) => ({
-      ...prev,
-      [key]: [...(prev[key] || []), { start, end }].sort((a, b) => a.start - b.start),
-    }));
+    if (start && end) {  // Ensure start and end are not undefined
+      setLocalAvailability((prev) => ({
+        ...prev,
+        [key]: [...(prev[key] || []), { start, end }].sort((a, b) => a.start - b.start),
+      }));
+    } else {
+      Alert.alert("Error", "Both start and end times must be selected.");
+    }
   };
 
   const removeTimeSlot = (date, index) => {
     const key = format(date, "yyyy-MM-dd");
-    setAvailability((prev) => ({
+    setLocalAvailability((prev) => ({
       ...prev,
       [key]: prev[key].filter((_, i) => i !== index),
     }));
@@ -63,8 +67,14 @@ export default function AvailabilityScreen({ route, navigation }) {
 
   const saveAvailability = async () => {
     try {
-      for (const date in availability) {
-        for (const slot of availability[date]) {
+      // Validate that all time slots have start and end times
+      for (const date in localAvailability) {
+        for (const slot of localAvailability[date]) {
+          if (!slot.start || !slot.end) {
+            Alert.alert("Error", "One or more time slots are missing start or end times.");
+            return;
+          }
+
           await axios.post("https://wish2work.onrender.com/api/availability", {
             studentId,
             date,
@@ -96,7 +106,15 @@ export default function AvailabilityScreen({ route, navigation }) {
           return (
             <View key={key} style={{ marginBottom: 20 }}>
               <Text style={{ fontSize: 18, fontWeight: "bold" }}>{format(date, "EEEE, MMM dd")}</Text>
-              {availability[key]?.map((slot, index) => (
+              {(availability[key] || []).map((slot, index) => (
+                <View key={index} style={{ flexDirection: "row", alignItems: "center", marginVertical: 5 }}>
+                  <Text>{format(slot.start, "hh:mm a")} - {format(slot.end, "hh:mm a")}</Text>
+                  <TouchableOpacity onPress={() => removeTimeSlot(date, index)} style={{ marginLeft: 10 }}>
+                    <Text style={{ color: "red" }}>Remove</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+              {(localAvailability[key] || []).map((slot, index) => (
                 <View key={index} style={{ flexDirection: "row", alignItems: "center", marginVertical: 5 }}>
                   <Text>{format(slot.start, "hh:mm a")} - {format(slot.end, "hh:mm a")}</Text>
                   <TouchableOpacity onPress={() => removeTimeSlot(date, index)} style={{ marginLeft: 10 }}>
@@ -127,7 +145,7 @@ export default function AvailabilityScreen({ route, navigation }) {
           visible={!!showPicker}
           onClose={() => setShowPicker(null)}
           onConfirm={(start, end) => {
-            addTimeSlot(showPicker, start, end);
+            addTimeSlotLocally(showPicker, start, end);
             setShowPicker(null);
           }}
         />
@@ -139,6 +157,16 @@ export default function AvailabilityScreen({ route, navigation }) {
 const TimePickerModal = ({ visible, onClose, onConfirm }) => {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+
+  // Ensure startTime and endTime are properly updated and valid before confirming
+  const handleConfirm = () => {
+    if (!startTime || !endTime) {
+      Alert.alert("Error", "Please select both start and end times.");
+      return;
+    }
+    onConfirm(startTime, endTime);
+    onClose();
+  };
 
   return visible ? (
     <View
@@ -163,7 +191,7 @@ const TimePickerModal = ({ visible, onClose, onConfirm }) => {
         <TouchableOpacity onPress={onClose} style={{ padding: 10 }}>
           <Text style={{ color: "red" }}>Cancel</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => onConfirm(startTime, endTime)} style={{ padding: 10 }}>
+        <TouchableOpacity onPress={handleConfirm} style={{ padding: 10 }}>
           <Text style={{ color: "green" }}>Confirm</Text>
         </TouchableOpacity>
       </View>
