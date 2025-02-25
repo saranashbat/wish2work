@@ -173,6 +173,9 @@ const StudentProfile = ({route, navigation}) => {
 
         <TouchableOpacity style={styles.button}><Text style={styles.buttonText}>YOUR COURSES</Text></TouchableOpacity>
         <TouchableOpacity style={styles.button}><Text style={styles.buttonText}>YOUR SKILLS</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Availability', {studentId: studentId })} 
+        style={styles.button}><Text style={styles.buttonText}>YOUR AVAILABILITY</Text></TouchableOpacity>
+
         
         {/* Logout Button with icon and text */}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>

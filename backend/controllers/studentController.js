@@ -1,5 +1,7 @@
 // controllers/studentController.js
 const Student = require('../models/student');
+const  Availability = require('../models/availability');  // Import the Availability model
+
 const {sequelize} = require('../config/db'); // Import the Sequelize instance
 
 
@@ -109,3 +111,26 @@ exports.deactivateStudent = async (req, res) => {
   }
 };
 
+exports.getAvailabilityForStudent = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Fetch all availability for the given studentId
+    console.log(Availability);  // Check if the model is properly imported
+    
+    const availabilities = await Availability.findAll({
+      where: {
+        student_id: id,
+      },
+    });
+
+    // Check if availabilities exist for the student
+    if (availabilities.length > 0) {
+      res.status(200).json(availabilities);  // Return the availability data
+    } else {
+      res.status(404).json({ message: 'No availability found for this student' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

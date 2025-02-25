@@ -24,5 +24,8 @@ router.patch('/students/:id/activate', studentController.activateStudent);
 // Deactivate student route
 router.patch('/students/:id/deactivate', studentController.deactivateStudent);
 
+router.get('/students/:id/availability', studentController.getAvailabilityForStudent);
+
+
 
 module.exports = router;
