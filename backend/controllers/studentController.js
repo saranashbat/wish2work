@@ -1,6 +1,9 @@
 // controllers/studentController.js
 const Student = require('../models/student');
 const  Availability = require('../models/availability');  // Import the Availability model
+const StudentCourse = require('../models/studentCourse'); // Import the StudentCourse model
+const Course = require('../models/course'); // Import the Course model
+
 
 const {sequelize} = require('../config/db'); // Import the Sequelize instance
 
@@ -129,6 +132,38 @@ exports.getAvailabilityForStudent = async (req, res) => {
       res.status(200).json(availabilities);  // Return the availability data
     } else {
       res.status(404).json({ message: 'No availability found for this student' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+// Get all courses for a specific student
+exports.getCoursesForStudent = async (req, res) => {
+  const { id } = req.params; // Get student_id from request params
+
+  try {
+    // Step 1: Get all the course IDs that this student is enrolled in from the StudentCourse table
+    const studentCourses = await StudentCourse.findAll({
+      where: { student_id: id }, // Filter by student_id
+      attributes: ['course_id'], // Get only course_id
+    });
+
+    // Step 2: Extract the course IDs from the studentCourses
+    const courseIds = studentCourses.map(sc => sc.course_id);
+
+    if (courseIds.length > 0) {
+      // Step 3: Fetch the courses corresponding to the course IDs
+      const courses = await Course.findAll({
+        where: {
+          course_id: courseIds, // Use the list of course IDs to find the courses
+        },
+      });
+
+      res.status(200).json(courses);
+    } else {
+      res.status(404).json({ message: 'No courses found for this student' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
