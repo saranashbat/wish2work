@@ -3,7 +3,7 @@ import { View, Text, SafeAreaView, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import ProfileStack from './ProfileStack/ProfileStack';
-
+import Home from './Home';
 
 // Placeholder screens for the tabs (to be replaced with actual components)
 const PlaceholderScreen = ({ name }) => (
@@ -45,7 +45,7 @@ const StudentTabNav = () => {
       >
         <Tab.Screen
           name="Home"
-          component={() => <PlaceholderScreen name="Home" />}
+          component={Home}
           options={{
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="home" color={color} size={35} />
