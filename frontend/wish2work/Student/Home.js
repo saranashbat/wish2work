@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, Animated } from 'react-native';
-import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { View, Text, Image, StyleSheet, ScrollView, Animated, Modal, TouchableOpacity } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const motivationalPhrases = [
-  "Your next opportunity is one click away! 🚀",
+  "Your next opportunity is one step away! 🚀",
   "Build your future while you study! 📚",
   "Skills + Opportunity = Success! 💡",
   "Get noticed. Get hired. 💼",
@@ -12,6 +12,7 @@ const motivationalPhrases = [
 const Home = () => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [messageIndex, setMessageIndex] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false); // State for controlling modal visibility
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,9 +33,10 @@ const Home = () => {
       <View style={styles.header}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
         <View style={styles.headerIcons}>
-          <FontAwesome5 name="bell" size={24} color="#130160" style={styles.icon} />
-          <FontAwesome5 name="question-circle" size={24} color="#130160" style={styles.icon} />
-          <FontAwesome5 name="user-circle" size={24} color="#130160" style={styles.icon} />
+          {/* TouchableOpacity to open the modal */}
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
+            <FontAwesome5 name="question-circle" size={24} color="#130160" style={styles.icon} />
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -74,6 +76,34 @@ const Home = () => {
         </Text>
       </View>
 
+      {/* Modal for showing app info and related questions */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)} // Close the modal when requested
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>App Information</Text>
+            <Text style={styles.modalText}>Wish2Work is a platform designed to connect students with faculty and staff to fill urgent, short-term vacancies efficiently.</Text>
+            <Text style={styles.modalSubTitle}>Related Questions</Text>
+            <Text style={styles.modalText}>- How to be selected for a job?</Text>
+            <Text style={styles.modalText}>Answer: The selection done based on your skills and qualifications as well as your experience.</Text>
+
+            <Text style={styles.modalText}>- How can I update my profile?</Text>
+            <Text style={styles.modalText}>Answer: Go to your profile page and select the "Edit" option to update your information.</Text>
+
+            <Text style={styles.modalSubTitle}>Meet the Developers</Text>
+            <Text style={styles.modalText}>Developed by the awesome team at Wish2Work!</Text>
+
+            {/* Close Button */}
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -153,19 +183,46 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5,
   },
-  featureIcons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginTop: 20,
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  iconContainer: {
+  modalContainer: {
+    width: 300,
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
     alignItems: 'center',
   },
-  iconText: {
-    fontSize: 14,
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
     color: '#130160',
-    marginTop: 5,
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#4A4A4A',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  modalSubTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#130160',
+    marginTop: 20,
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: '#130160',
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
