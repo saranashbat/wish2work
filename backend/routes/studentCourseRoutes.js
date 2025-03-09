@@ -15,6 +15,6 @@ router.post('/student-courses', studentCourseController.createStudentCourse);
 router.put('/student-courses/:id', studentCourseController.updateStudentCourse);
 
 // Delete a student-course record
-router.delete('/student-courses/:id', studentCourseController.deleteStudentCourse);
+router.delete('/student-courses/:course_id/:student_id', studentCourseController.deleteStudentCourse);
 
 module.exports = router;

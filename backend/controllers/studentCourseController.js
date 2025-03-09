@@ -52,7 +52,11 @@ exports.updateStudentCourse = async (req, res) => {
 // Delete a student-course record
 exports.deleteStudentCourse = async (req, res) => {
   try {
-    const deleted = await StudentCourse.destroy({ where: { student_course_id: req.params.id } });
+    const { course_id, student_id } = req.params;
+    const deleted = await StudentCourse.destroy({
+      where: { course_id, student_id }
+    });
+
     if (deleted) {
       res.status(200).json({ message: 'StudentCourse deleted successfully' });
     } else {
@@ -62,3 +66,4 @@ exports.deleteStudentCourse = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
