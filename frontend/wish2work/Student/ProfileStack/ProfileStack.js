@@ -3,6 +3,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import StudentProfile from './components/StudentProfile';
 import EditAbout from './components/EditAbout';
 import Availability from './components/Availability';
+import Courses from './components/Courses';
+import AddCourse from './components/AddCourse';
+
+
 
 
 const Stack = createNativeStackNavigator();
@@ -13,8 +17,9 @@ const ProfileStack = () => {
       <Stack.Screen name="StudentProfile" component={StudentProfile} />
       <Stack.Screen name="EditAbout" component={EditAbout} />
       <Stack.Screen name="Availability" component={Availability} />
+      <Stack.Screen name="Courses" component={Courses} />
+      <Stack.Screen name="AddCourse" component={AddCourse} />
 
-      
     </Stack.Navigator>
   );
 };

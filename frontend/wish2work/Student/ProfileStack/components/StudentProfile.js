@@ -171,7 +171,7 @@ const StudentProfile = ({route, navigation}) => {
           </Text>
         </ScrollView>
 
-        <TouchableOpacity style={styles.button}><Text style={styles.buttonText}>YOUR COURSES</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Courses', {studentId: studentId })} style={styles.button}><Text style={styles.buttonText}>YOUR COURSES</Text></TouchableOpacity>
         <TouchableOpacity style={styles.button}><Text style={styles.buttonText}>YOUR SKILLS</Text></TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Availability', {studentId: studentId })} 
         style={styles.button}><Text style={styles.buttonText}>YOUR AVAILABILITY</Text></TouchableOpacity>

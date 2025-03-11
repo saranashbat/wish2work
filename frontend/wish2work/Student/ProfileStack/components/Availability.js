@@ -214,8 +214,14 @@ export default function Availability({ route, navigation }) {
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.header}>
-      <Ionicons name="arrow-back" size={30} color="#4A90E2" onPress={() => navigation.goBack()} />
-        </View>
+            <Ionicons
+              name="arrow-back"
+              size={30}
+              color="#4A90E2"
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            />
+            <Text style={styles.title}>Availability</Text>
       <ScrollView style={{padding: 30}}>
         {weekDates.map((date) => {
           const dateKey = format(date, "yyyy-MM-dd");
@@ -263,5 +269,12 @@ const styles = StyleSheet.create({
           elevation: 4,
         },
       }),
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#2C2F6B',
+      textAlign: 'center',
+      flex: 1,
     },
 })
