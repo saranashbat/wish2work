@@ -28,6 +28,7 @@ router.get('/students/:id/availability', studentController.getAvailabilityForStu
 
 router.get('/students/:id/courses', studentController.getCoursesForStudent);
 
+router.get('/students/:id/skills', studentController.getSkillsForStudent);
 
 
 

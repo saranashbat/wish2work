@@ -212,7 +212,7 @@ export default function Availability({ route, navigation }) {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: '#fff'}}>
       <View style={styles.header}>
             <Ionicons
               name="arrow-back"
@@ -222,6 +222,7 @@ export default function Availability({ route, navigation }) {
               style={styles.backButton}
             />
             <Text style={styles.title}>Availability</Text>
+          </View>
       <ScrollView style={{padding: 30}}>
         {weekDates.map((date) => {
           const dateKey = format(date, "yyyy-MM-dd");

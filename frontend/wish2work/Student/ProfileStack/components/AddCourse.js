@@ -1,50 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 
-const AddCoursePage = () => {
-  const route = useRoute();
-  const { studentId } = route.params; // Extract studentId from route params
+const AddCourse = ({route, navigation}) => {
+  const { studentId, existingCourses } = route.params;
   const [availableCourses, setAvailableCourses] = useState([]);
-  const [addedCourses, setAddedCourses] = useState(new Set());
-  const [studentCourses, setStudentCourses] = useState([]); // Store all student courses
+  const [addedCourses, setAddedCourses] = useState(new Set(existingCourses.map(course => course.course_id)));
 
-  // Fetch all available courses and the student's current courses
+  // Fetching all available courses
+  const fetchCourses = async () => {
+    try {
+      const response = await axios.get('https://wish2work.onrender.com/api/courses');
+      setAvailableCourses(response.data);
+    } catch (error) {
+      console.error('Error fetching available courses:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        // Fetch all available courses
-        const availableCoursesResponse = await axios.get('https://wish2work.onrender.com/api/courses');
-        setAvailableCourses(availableCoursesResponse.data); // Store all available courses
-
-        // Fetch all student courses and filter by studentId
-        const studentCoursesResponse = await axios.get('https://wish2work.onrender.com/api/student-courses');
-        const studentCoursesForCurrentStudent = studentCoursesResponse.data.filter(course => course.student_id === studentId);
-        setStudentCourses(studentCoursesForCurrentStudent); // Store the courses for the current student
-
-        // Extract course IDs the student is already enrolled in
-        const existingCourseIds = studentCoursesForCurrentStudent.map(course => course.course_id);
-        setAddedCourses(new Set(existingCourseIds)); // Update addedCourses with the student's existing courses
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      }
-    };
-
     fetchCourses();
-  }, [studentId]);
+  }, []);
 
   const handleAddCourse = async (courseId) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/student-courses', {
+      const response = await axios.post('https://wish2work.onrender.com/api/student-courses', {
         course_id: courseId,
         student_id: studentId,
       });
 
-      if (response.status === 200) {
-        setAddedCourses(prevState => new Set(prevState).add(courseId)); // Add the course to the "added" set
+      if (response.status === 200 || response.status === 201) {
+        setAddedCourses(prevState => new Set(prevState).add(courseId));
         Alert.alert('Success', 'Course added successfully');
+        fetchCourses(); // Refresh the available courses
       } else {
         Alert.alert('Error', 'Failed to add course');
       }
@@ -75,14 +64,20 @@ const AddCoursePage = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <View style={styles.header}>
+              <Ionicons
+                name="arrow-back"
+                size={30}
+                color="#4A90E2"
+                onPress={() => navigation.goBack()}
+                style={styles.backButton}
+              />
+              <Text style={styles.title}> Add Courses</Text>
+            </View>
       {availableCourses.length > 0 ? (
-        availableCourses.map(course => {
-          // Only render the course if it's not already added to the student's courses
-          if (!addedCourses.has(course.course_id)) {
-            return renderCourseCard(course);
-          }
-          return null; // Skip rendering if the course is already added
-        })
+        availableCourses.map(course => (
+          !addedCourses.has(course.course_id) ? renderCourseCard(course) : null
+        ))
       ) : (
         <Text style={styles.noCoursesText}>No courses available</Text>
       )}
@@ -94,7 +89,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 16,
   },
   card: {
     backgroundColor: '#2C2F6B',
@@ -106,6 +100,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    margin: 20
   },
   courseName: {
     fontSize: 18,
@@ -126,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addedButton: {
-    backgroundColor: '#2C2F6B', // Change color to indicate added state
+    backgroundColor: '#2C2F6B',
   },
   addButtonText: {
     color: '#fff',
@@ -139,6 +134,33 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
+  header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 15,
+      backgroundColor: 'white',
+      borderBottomWidth: 1,
+      borderBottomColor: '#ddd',
+      ...Platform.select({
+        ios: {
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.2,
+          shadowRadius: 2,
+        },
+        android: {
+          elevation: 4,
+        },
+      }),
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#2C2F6B',
+      textAlign: 'center',
+      flex: 1,
+    },
 });
 
-export default AddCoursePage;
+export default AddCourse;

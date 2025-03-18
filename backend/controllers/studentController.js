@@ -3,6 +3,8 @@ const Student = require('../models/student');
 const  Availability = require('../models/availability');  // Import the Availability model
 const StudentCourse = require('../models/studentCourse'); // Import the StudentCourse model
 const Course = require('../models/course'); // Import the Course model
+const Skill = require('../models/skill'); // Import the Course model
+
 
 
 const {sequelize} = require('../config/db'); // Import the Sequelize instance
@@ -164,6 +166,29 @@ exports.getCoursesForStudent = async (req, res) => {
       res.status(200).json(courses);
     } else {
       res.status(404).json({ message: 'No courses found for this student' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get all skills for a specific student
+exports.getSkillsForStudent = async (req, res) => {
+  const { id } = req.params; // Get student_id from request params
+
+  try {
+    // Find all skills associated with the given student_id
+    const skills = await Skill.findAll({
+      where: {
+        student_id: id,
+      },
+    });
+
+    // Check if skills exist for the student
+    if (skills.length > 0) {
+      res.status(200).json(skills); // Return the skills data
+    } else {
+      res.status(404).json({ message: 'No skills found for this student' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -172,7 +172,7 @@ const StudentProfile = ({route, navigation}) => {
         </ScrollView>
 
         <TouchableOpacity onPress={() => navigation.navigate('Courses', {studentId: studentId })} style={styles.button}><Text style={styles.buttonText}>YOUR COURSES</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.button}><Text style={styles.buttonText}>YOUR SKILLS</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Skills', {studentId: studentId })} style={styles.button}><Text style={styles.buttonText}>YOUR SKILLS</Text></TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Availability', {studentId: studentId })} 
         style={styles.button}><Text style={styles.buttonText}>YOUR AVAILABILITY</Text></TouchableOpacity>
 

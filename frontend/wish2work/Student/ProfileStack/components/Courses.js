@@ -1,26 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Alertm, Platform } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
 import axios from 'axios';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Courses = ({route, navigation}) => {
   const { studentId } = route.params;
   const [courses, setCourses] = useState([]);
 
-  useEffect(() => {
-    // Fetching student's courses with axios
-    const fetchCourses = async () => {
-      try {
-        const response = await axios.get(`https://wish2work.onrender.com/api/students/${studentId}/courses`);
-        setCourses(response.data);  // Assuming response.data is an array of courses
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      }
-    };
+  const fetchCourses = async () => {
+    try {
+      const response = await axios.get(`https://wish2work.onrender.com/api/students/${studentId}/courses`);
+      setCourses(response.data);  // Assuming response.data is an array of courses
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
 
-    fetchCourses();
-  }, [studentId]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchCourses();
+    }, [studentId])
+  );
 
   const handleDeleteCourse = async (courseId) => {
     try {
@@ -53,27 +54,32 @@ const Courses = ({route, navigation}) => {
   };
 
   return (
-    
     <ScrollView style={styles.container}>
-    <View style={styles.header}>
-      <Ionicons
-        name="arrow-back"
-        size={30}
-        color="#4A90E2"
-        onPress={() => navigation.goBack()}
-        style={styles.backButton}
-      />
-      <Text style={styles.title}>Courses</Text>
-    </View>
+      
+      <View style={styles.header}>
+        <Ionicons
+          name="arrow-back"
+          size={30}
+          color="#4A90E2"
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        />
+        <Text style={styles.title}>Courses</Text>
+      </View>
+      <TouchableOpacity 
+        onPress={() => navigation.navigate('AddCourse', { studentId: studentId, existingCourses: courses })} 
+        style={styles.addCourseButton}
+      >
+        <Text style={styles.addCourseButtonText}>Add Course +</Text>
+      </TouchableOpacity>
+      
       {courses.length > 0 ? (
         courses.map(renderCourseCard)
       ) : (
         <Text style={styles.noCoursesText}>No courses available</Text>
       )}
 
-      <TouchableOpacity onPress={() => navigation.navigate('AddCourse', {studentId: studentId })} style={styles.addCourseButton}>
-        <Text style={styles.addCourseButtonText}>Add Course</Text>
-      </TouchableOpacity>
+      
     </ScrollView>
   );
 };
@@ -93,7 +99,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    margin: 12,
+    margin: 20,
   },
   courseName: {
     fontSize: 18,
@@ -123,7 +129,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 5,
     alignItems: 'center',
-    margin: 16
+    margin: 20
   },
   addCourseButtonText: {
     color: '#fff',
@@ -137,32 +143,32 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 15,
-        backgroundColor: 'white',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-        ...Platform.select({
-          ios: {
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.2,
-            shadowRadius: 2,
-          },
-          android: {
-            elevation: 4,
-          },
-        }),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
       },
-      title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#2C2F6B',
-        textAlign: 'center',
-        flex: 1,
+      android: {
+        elevation: 4,
       },
+    }),
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C2F6B',
+    textAlign: 'center',
+    flex: 1,
+  },
 });
 
 export default Courses;
