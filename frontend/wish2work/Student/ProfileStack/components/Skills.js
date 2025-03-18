@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { ScrollView, View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 
-const Skills = ({ route }) => {
+const Skills = ({ navigation, route }) => {
   const { studentId } = route.params; // studentId passed from the previous page
   const [skills, setSkills] = useState([]);
   const [newSkill, setNewSkill] = useState({ title: '', description: '' });
@@ -82,7 +82,17 @@ const Skills = ({ route }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Add your skills or certificates here</Text>
+        <View style={styles.header}>
+                    <Ionicons
+                      name="arrow-back"
+                      size={30}
+                      color="#4A90E2"
+                      onPress={() => navigation.goBack()}
+                      style={styles.backButton}
+                    />
+                    <Text style={styles.title}>Skills</Text>
+                  </View>
+      <Text style={styles.header2}>Add your skills or certificates here</Text>
 
       <View style={styles.formContainer}>
         <TextInput
@@ -121,18 +131,19 @@ const Skills = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#fff',
   },
-  header: {
+  header2: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#333',
     textAlign: 'center',
+    marginTop: 40
   },
   formContainer: {
     marginBottom: 20,
+    padding: 20,
   },
   input: {
     borderWidth: 1,
@@ -143,7 +154,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   addButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#2C2F6B',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
@@ -164,6 +175,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    marginLeft: 20,
+    marginRight:20,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -198,6 +211,34 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
+  header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 15,
+      backgroundColor: 'white',
+      borderBottomWidth: 1,
+      borderBottomColor: '#ddd',
+      ...Platform.select({
+        ios: {
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.2,
+          shadowRadius: 2,
+        },
+        android: {
+          elevation: 4,
+        },
+      }),
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#2C2F6B',
+      textAlign: 'center',
+      flex: 1,
+    },
+  
 });
 
 export default Skills;

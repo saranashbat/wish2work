@@ -4,6 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import ProfileStack from './ProfileStack/ProfileStack';
 import Home from './Home';
+import Email from './Email';
+
 
 // Placeholder screens for the tabs (to be replaced with actual components)
 const PlaceholderScreen = ({ name }) => (
@@ -54,7 +56,7 @@ const StudentTabNav = () => {
         />
         <Tab.Screen
           name="Email"
-          component={() => <PlaceholderScreen name="Email" />}
+          component={Email}
           options={{
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="email" color={color} size={35} />

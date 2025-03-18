@@ -5,52 +5,7 @@ import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-const TimePickerModal = ({ visible, onClose, onConfirm }) => {
-  const [startTime, setStartTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date(new Date().setHours(new Date().getHours() + 1)));
 
-  const handleConfirm = () => {
-    if (!startTime || !endTime || isNaN(startTime.getTime()) || isNaN(endTime.getTime()) || startTime >= endTime) {
-      Alert.alert("Error", "End time must be after start time and both times must be valid.");
-      return;
-    }
-    
-    console.log("Start time:", startTime);
-    console.log("End time:", endTime);
-    
-    onConfirm(startTime, endTime);
-    onClose();
-  };
-  
-
-  return visible ? (
-    <View style={{ position: "absolute", bottom: 20, left: 20, right: 20, backgroundColor: "white", padding: 15, borderRadius: 10, elevation: 5 }}>
-      <Text style={{ fontSize: 16, fontWeight: "bold" }}>Select Start Time:</Text>
-      <DateTimePicker mode="time" display="default" value={startTime} onChange={(_, time) => time && setStartTime(time)} />
-
-      <Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 10 }}>Select End Time:</Text>
-      <DateTimePicker 
-        mode="time" 
-        display="default" 
-        value={endTime} 
-        onChange={(_, time) => {
-          if (time instanceof Date && !isNaN(time.getTime())) {
-            setEndTime(time);  // Set endTime only if valid
-          }
-        }} 
-      />
-
-      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
-        <TouchableOpacity onPress={onClose} style={{ padding: 10 }}>
-          <Text style={{ color: "red" }}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleConfirm} style={{ padding: 10 }}>
-          <Text style={{ color: "green" }}>Confirm</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  ) : null;
-};
 
 export default function Availability({ route, navigation }) {
   const { studentId } = route.params;
@@ -84,7 +39,7 @@ export default function Availability({ route, navigation }) {
     
   
     return visible ? (
-      <View style={{ position: "absolute", bottom: 20, left: 20, right: 20, backgroundColor: "white", padding: 15, borderRadius: 10, elevation: 5 }}>
+      <View style={{ position: "absolute", bottom: 20, left: 20, right: 20, backgroundColor: "#ECF2F7", padding: 15, borderRadius: 10, elevation: 5 }}>
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>Select Start Time:</Text>
         <DateTimePicker mode="time" display="default" value={startTime} onChange={(_, time) => time && setStartTime(time)} />
   

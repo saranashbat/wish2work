@@ -70,7 +70,7 @@ const Courses = ({route, navigation}) => {
         onPress={() => navigation.navigate('AddCourse', { studentId: studentId, existingCourses: courses })} 
         style={styles.addCourseButton}
       >
-        <Text style={styles.addCourseButtonText}>Add Course +</Text>
+        <Text style={styles.addCourseButtonText}>+ Add Course</Text>
       </TouchableOpacity>
       
       {courses.length > 0 ? (
