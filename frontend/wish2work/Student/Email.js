@@ -20,7 +20,7 @@ const EmailScreen = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/send-email', emailData);
+      const response = await axios.post('https://wish2work.onrender.com/send-email', emailData);
       Alert.alert('Success', response.data.message);
       setRecipient('');
       setSubject('');
