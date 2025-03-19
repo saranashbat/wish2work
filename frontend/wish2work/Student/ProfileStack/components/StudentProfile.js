@@ -128,7 +128,7 @@ const StudentProfile = ({route, navigation}) => {
             borderRadius: 5 
           }}
         >
-          <Text style={{ color: 'white' }}>Settings</Text>
+          <Text onPress={()=>navigation.navigate('Settings', {studentId: studentId, phone: student.phone_number})} style={{ color: 'white' }}>Settings</Text>
         </TouchableOpacity>
       </View>
       <View style={{ padding: width * 0.05 }}>
@@ -143,9 +143,9 @@ const StudentProfile = ({route, navigation}) => {
         </View>
 
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-          <Text style={{ fontSize: 18, fontWeight: 'bold', marginLeft: 10}}>About</Text>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', marginLeft: 10}}>Description</Text>
           <TouchableOpacity
-              style={{ marginLeft: 10 }}
+              style={{ marginLeft: 10, }}
               onPress={() => navigation.navigate('EditAbout', { description: student.personal_description, studentId: studentId })}>
               <FontAwesome name="edit" size={23} color="#4A90E2" />
           </TouchableOpacity>
@@ -158,6 +158,8 @@ const StudentProfile = ({route, navigation}) => {
             borderRadius: 10, 
             marginTop: 5,
             minHeight: height * 0.08, // Adjust minimum height to maintain layout consistency
+            borderWidth: 0.5,
+            borderColor: '#7A9FD9'
           }}
         >
           <Text 

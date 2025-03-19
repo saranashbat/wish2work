@@ -6,6 +6,8 @@ import Availability from './components/Availability';
 import Courses from './components/Courses';
 import AddCourse from './components/AddCourse';
 import Skills from './components/Skills';
+import Settings from './components/Settings';
+
 
 
 
@@ -22,6 +24,8 @@ const ProfileStack = () => {
       <Stack.Screen name="Courses" component={Courses} />
       <Stack.Screen name="AddCourse" component={AddCourse} />
       <Stack.Screen name="Skills" component={Skills} />
+      <Stack.Screen name="Settings" component={Settings} />
+
 
     </Stack.Navigator>
   );

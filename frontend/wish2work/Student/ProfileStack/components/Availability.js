@@ -39,7 +39,7 @@ export default function Availability({ route, navigation }) {
     
   
     return visible ? (
-      <View style={{ position: "absolute", bottom: 20, left: 20, right: 20, backgroundColor: "#ECF2F7", padding: 15, borderRadius: 10, elevation: 5 }}>
+      <View style={{ position: "absolute", bottom: 20, left: 20, right: 20, backgroundColor: "#ECF2F7", padding: 15, borderRadius: 10, elevation: 5, }}>
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>Select Start Time:</Text>
         <DateTimePicker mode="time" display="default" value={startTime} onChange={(_, time) => time && setStartTime(time)} />
   

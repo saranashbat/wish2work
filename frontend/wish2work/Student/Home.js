@@ -31,7 +31,6 @@ const Home = () => {
     <ScrollView contentContainerStyle={styles.container}>
       {/* Header with Logo and Icons */}
       <View style={styles.header}>
-        <Image source={require('../assets/logo.png')} style={styles.logo} />
         <View style={styles.headerIcons}>
           {/* TouchableOpacity to open the modal */}
           <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -46,7 +45,7 @@ const Home = () => {
       </Animated.Text>
 
       {/* Welcome Image */}
-      <Image source={require('../assets/welcome3.png')} style={styles.image} />
+      <Image source={require('../assets/logo.png')} style={styles.image} />
 
       <Text style={styles.title}>Welcome to Wish2Work!</Text>
       <Text style={styles.subtitle}>Connecting students with on-campus job opportunities efficiently.</Text>
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    flexDirection: 'row',
+    flexDirection: 'row-reverse',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
@@ -142,7 +141,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 200,
-    height: 200,
+    height: 90,
     marginBottom: 20,
   },
   title: {
