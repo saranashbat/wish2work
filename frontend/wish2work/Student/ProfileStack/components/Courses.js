@@ -11,11 +11,24 @@ const Courses = ({route, navigation}) => {
   const fetchCourses = async () => {
     try {
       const response = await axios.get(`https://wish2work.onrender.com/api/students/${studentId}/courses`);
-      setCourses(response.data);  // Assuming response.data is an array of courses
+      
+      if (response.status === 200 && Array.isArray(response.data)) {
+        setCourses(response.data);  // Set courses if data is valid
+      } else {
+        setCourses([]);  // No courses found, but not an error
+      }
     } catch (error) {
-      console.error('Error fetching courses:', error);
+      if (error.response && error.response.status === 404) {
+        // If the server returns a 404, assume it's because no courses are found
+        setCourses([]);
+      } else {
+        console.error('Error fetching courses:', error);
+        Alert.alert('Error', 'Failed to fetch courses. Please try again later.');
+      }
     }
   };
+  
+  
 
   useFocusEffect(
     useCallback(() => {
