@@ -21,4 +21,7 @@ router.delete('/departments/:id', departmentController.deleteDepartment);
 // Get programs for a specific department
 router.get('/departments/:id/programs', departmentController.getProgramsByDepartmentId);
 
+// Get programs for a specific department
+router.get('/departments/:id/students', departmentController.getStudentsByDepartmentId);
+
 module.exports = router;

@@ -6,7 +6,7 @@ import { MaterialIcons } from 'react-native-vector-icons';
 // Get window dimensions
 const { width, height } = Dimensions.get('window');
 
-const Categories = () => {
+const Categories = ({navigation}) => {
     const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -46,7 +46,7 @@ const Categories = () => {
                     <Text style={styles.subtitle}>Find the right student for the job.</Text>
                     <Text style={styles.title}>Select a College</Text>
                     {departments.map(department => (
-                        <TouchableOpacity key={department.department_id} style={styles.departmentButton}>
+                        <TouchableOpacity onPress={()=> navigation.navigate("Search", {department_id: department.department_id})} key={department.department_id} style={styles.departmentButton}>
                             <MaterialIcons name={departmentIcons[department.department_id]} size={30} color="#130160" style={{ marginRight: 10 }} />
                             <Text style={styles.departmentText} numberOfLines={1} ellipsizeMode="tail">
                                 {department.name}
