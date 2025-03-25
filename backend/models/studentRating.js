@@ -1,5 +1,6 @@
-const { DataTypes } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
+
 
 const StudentRating = sequelize.define('StudentRating', {
   rating_id: {
@@ -23,7 +24,7 @@ const StudentRating = sequelize.define('StudentRating', {
   created_at: {
     type: DataTypes.DATE, // Use DATE instead of DATETIMEOFFSET for compatibility
     allowNull: false,
-    defaultValue: DataTypes.NOW, // Set default value to current timestamp
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
   },
   feedback: {
     type: DataTypes.TEXT,
