@@ -132,23 +132,9 @@ exports.activateStaff = async (req, res) => {
     try {
       const staffId = req.params.staff_id;
   
-      // Find the staff member by staff_id
-      const staff = await Staff.findByPk(staffId);
-  
-      if (!staff) {
-        return res.status(404).json({ message: 'Staff member not found' });
-      }
-  
-      // Retrieve requests that belong to the staff member by staff_id
+      // Retrieve requests that belong to the staff member by filtering on staff_id
       const requests = await Request.findAll({
-        where: { staff_id: staffId },
-        include: [
-          {
-            model: Staff,
-            attributes: ['first_name', 'last_name', 'email'], // Include relevant staff attributes if needed
-          },
-          // Include any other related models or associations
-        ],
+        where: { staff_id: staffId }, // No need for associations
       });
   
       if (requests.length === 0) {
