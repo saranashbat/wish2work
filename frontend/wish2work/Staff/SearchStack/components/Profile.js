@@ -84,6 +84,33 @@ const StudentProfile = ({ route, navigation }) => {
             {personal_description || 'No description provided'}
           </Text>
         </ScrollView>
+
+        <View style={styles.buttonRow}>
+        <TouchableOpacity 
+            style={[styles.button, { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
+            onPress={() => navigation.navigate("CourseSkill", {studentId: student_id})}
+        >
+            <FontAwesome name="book" size={18} color="white" style={{ marginRight: 8 }} />
+            <Text style={styles.buttonText}>Courses & Skills</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+            style={[styles.button, { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
+            onPress={() => navigation.navigate("Availabilities", {studentId: student_id})}
+        >
+            <FontAwesome name="calendar" size={18} color="white" style={{ marginRight: 8 }} />
+            <Text style={styles.buttonText}>Availability</Text>
+        </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity 
+        style={[styles.button, { backgroundColor: "#4CAF50", flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
+        onPress={() => alert('Send request to student')}
+        >
+        <FontAwesome name="paper-plane" size={18} color="white" style={{ marginRight: 8 }} />
+        <Text style={styles.buttonText}>Send Request to Student</Text>
+        </TouchableOpacity>
+
       </View>
 
       <Modal
@@ -162,7 +189,6 @@ const styles = {
   infoIcon: {
     fontSize: 18,
     marginRight: width * 0.03,
-
   },
   infoText: {
     fontSize: 16,
@@ -194,6 +220,25 @@ const styles = {
     color: '#333',
     lineHeight: 22,
   },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: height * 0.01,
+  },
+  button: {
+    flex: 1,
+    backgroundColor: '#2C2F6B',
+    padding: 17,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
@@ -223,11 +268,6 @@ const styles = {
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
 };
 

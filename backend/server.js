@@ -10,7 +10,7 @@ const availabilityRoutes = require('./routes/availabilityRoutes'); // Import ava
 const skillRoutes = require('./routes/skillRoutes');
 const studentCourseRoutes = require('./routes/studentCourseRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-
+const requestRoutes = require('./routes/requestRoutes'); // Import request routes
 
 
 const app = express();
@@ -21,29 +21,20 @@ app.use(express.json()); // Middleware to parse JSON requests
 connectToDB();
 
 app.use('/api', programRoutes); 
-
 app.use('/api', departmentRoutes);
-
 app.use('/api', courseRoutes); 
-
 app.use('/api', studentRoutes);
-
 app.use('/api', staffRoutes);
-
 app.use('/api', availabilityRoutes); 
-
 app.use('/api', skillRoutes);
-
 app.use('/api', studentCourseRoutes);
-
 app.use('/api', adminRoutes);
+app.use('/api', requestRoutes); // Add the request routes here
 
 // Default route
 app.get('/', (req, res) => {
   res.send('Hello from the backend!');
 });
-
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
