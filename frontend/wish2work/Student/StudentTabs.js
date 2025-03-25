@@ -5,6 +5,7 @@ import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import ProfileStack from './ProfileStack/ProfileStack';
 import Home from './Home';
 import Email from './Email';
+import RequestStack from './RequestStack/RequestStack';
 
 
 // Placeholder screens for the tabs (to be replaced with actual components)
@@ -56,13 +57,14 @@ const StudentTabNav = () => {
         />
         <Tab.Screen
           name="Email"
-          component={Email}
+          component={RequestStack}
           options={{
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="email" color={color} size={35} />
             ),
           }}
         />
+
         <Tab.Screen
           name="Profile"
           component={ProfileStack}

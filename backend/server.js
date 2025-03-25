@@ -11,6 +11,7 @@ const skillRoutes = require('./routes/skillRoutes');
 const studentCourseRoutes = require('./routes/studentCourseRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const requestRoutes = require('./routes/requestRoutes'); // Import request routes
+const studentRatingRoutes = require('./routes/studentRatingRoutes');
 
 
 const app = express();
@@ -30,6 +31,8 @@ app.use('/api', skillRoutes);
 app.use('/api', studentCourseRoutes);
 app.use('/api', adminRoutes);
 app.use('/api', requestRoutes); // Add the request routes here
+app.use('/api', studentRatingRoutes);
+
 
 // Default route
 app.get('/', (req, res) => {

@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SearchStack from './SearchStack/SearchStack';
+import ViewRequestStack from './ViewRequestStack/ViewRequestStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -62,7 +63,7 @@ const StaffTabNav = () => {
         />
         <Tab.Screen
           name="Email"
-          component={() => <PlaceholderScreen name="Email" />}
+          component={ViewRequestStack}
           options={{
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="email" color={color} size={35} />

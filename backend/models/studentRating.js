@@ -6,31 +6,32 @@ const StudentRating = sequelize.define('StudentRating', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
-    autoIncrement: true,
-  },
-  staff_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
+    autoIncrement: true, // Auto-increment for rating_id
   },
   student_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  rating: {
+  staff_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    validate: {
-      min: 1,
-      max: 5,
-    },
+  },
+  rating_value: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  created_at: {
+    type: DataTypes.DATE, // Use DATE instead of DATETIMEOFFSET for compatibility
+    allowNull: false,
+    defaultValue: DataTypes.NOW, // Set default value to current timestamp
   },
   feedback: {
-    type: DataTypes.STRING(255),
-    allowNull: true, // Feedback is optional
+    type: DataTypes.TEXT,
+    allowNull: true, // feedback is nullable
   },
 }, {
   tableName: 'student_rating',
-  timestamps: true, // Assuming you want to track createdAt and updatedAt
+  timestamps: false, // Since 'created_at' is manually handled, we disable timestamps
 });
 
 module.exports = StudentRating;
