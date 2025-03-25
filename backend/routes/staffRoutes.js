@@ -3,6 +3,7 @@ const router = express.Router();
 const staffController = require('../controllers/staffController');
 
 
+
 // Get all staff
 router.get('/staff', staffController.getAllStaff); 
 
@@ -26,5 +27,6 @@ router.patch('/staff/:id/deactivate', staffController.deactivateStaff);
 
 router.get('/staff/email/:email', staffController.getStaffByEmail)
 
+router.get('/staff/:staff_id/requests', staffController.getRequestsByStaff);
 
 module.exports = router;

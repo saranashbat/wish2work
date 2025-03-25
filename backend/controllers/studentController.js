@@ -4,6 +4,7 @@ const  Availability = require('../models/availability');  // Import the Availabi
 const StudentCourse = require('../models/studentCourse'); // Import the StudentCourse model
 const Course = require('../models/course'); // Import the Course model
 const Skill = require('../models/skill'); // Import the Course model
+const Request = require('../models/request');
 
 
 
@@ -189,6 +190,35 @@ exports.getSkillsForStudent = async (req, res) => {
       res.status(200).json(skills); // Return the skills data
     } else {
       res.status(404).json({ message: 'No skills found for this student' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+exports.getRequestsForStudent = async (req, res) => {
+  const { id } = req.params; // Get student_id from the request params
+
+  try {
+    // Fetch all requests associated with the student using the student_id
+    const requests = await Request.findAll({
+      where: {
+        student_id: id, // Filter requests by student_id
+      },
+      include: [
+        {
+          model: Student, // Optionally include Student details in the request
+          attributes: ['first_name', 'last_name', 'email'], // Customize the fields if necessary
+        },
+      ],
+    });
+
+    // Check if requests exist for the student
+    if (requests.length > 0) {
+      res.status(200).json(requests); // Return the requests data
+    } else {
+      res.status(404).json({ message: 'No requests found for this student' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });

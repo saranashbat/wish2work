@@ -1,4 +1,6 @@
 const Staff = require('../models/staff');
+const Request = require('../models/request'); // Import the Request model
+
 const { sequelize } = require('../config/db'); // Import the Sequelize instance
 
 // Get all staff members
@@ -122,6 +124,41 @@ exports.activateStaff = async (req, res) => {
         res.status(404).json({ message: 'Staff member not found' });
       }
     } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  exports.getRequestsByStaff = async (req, res) => {
+    try {
+      const staffId = req.params.staff_id;
+  
+      // Find the staff member by staff_id
+      const staff = await Staff.findByPk(staffId);
+  
+      if (!staff) {
+        return res.status(404).json({ message: 'Staff member not found' });
+      }
+  
+      // Retrieve requests that belong to the staff member by staff_id
+      const requests = await Request.findAll({
+        where: { staff_id: staffId },
+        include: [
+          {
+            model: Staff,
+            attributes: ['first_name', 'last_name', 'email'], // Include relevant staff attributes if needed
+          },
+          // Include any other related models or associations
+        ],
+      });
+  
+      if (requests.length === 0) {
+        return res.status(404).json({ message: 'No requests found for this staff member' });
+      }
+  
+      // Return the retrieved requests
+      res.status(200).json(requests);
+    } catch (error) {
+      console.error('Error retrieving requests:', error);
       res.status(500).json({ error: error.message });
     }
   };

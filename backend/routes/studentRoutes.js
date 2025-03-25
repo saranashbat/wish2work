@@ -30,6 +30,7 @@ router.get('/students/:id/courses', studentController.getCoursesForStudent);
 
 router.get('/students/:id/skills', studentController.getSkillsForStudent);
 
+router.get('/students/:id/requests', studentController.getRequestsForStudent);
 
 
 module.exports = router;
