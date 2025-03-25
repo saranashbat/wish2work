@@ -111,3 +111,17 @@ exports.activateStaff = async (req, res) => {
     }
   };
   
+  exports.getStaffByEmail = async (req, res) => {
+    try {
+      // Find the staff member by email
+      const staff = await Staff.findOne({ where: { email: req.params.email } });
+  
+      if (staff) {
+        res.status(200).json(staff);
+      } else {
+        res.status(404).json({ message: 'Staff member not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };

@@ -24,5 +24,7 @@ router.patch('/staff/:id/activate', staffController.activateStaff);
 // Deactivate staff route
 router.patch('/staff/:id/deactivate', staffController.deactivateStaff);
 
+router.get('/staff/email/:email', staffController.getStaffByEmail)
+
 
 module.exports = router;
