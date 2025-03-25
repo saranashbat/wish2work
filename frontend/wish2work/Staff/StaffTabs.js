@@ -62,11 +62,11 @@ const StaffTabNav = () => {
           }}
         />
         <Tab.Screen
-          name="Email"
+          name="Requests"
           component={ViewRequestStack}
           options={{
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="email" color={color} size={35} />
+              <MaterialCommunityIcons name="send" color={color} size={30} />
             ),
           }}
         />

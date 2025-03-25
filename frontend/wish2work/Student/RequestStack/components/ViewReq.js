@@ -94,8 +94,8 @@ const ViewReq = () => {
           >
             {/* Staff Name & Email */}
             <View style={{ marginBottom: 8 }}>
-              <Text style={{ fontSize: 18, fontWeight: "bold", color: "#333" }}>{item.staff_name}</Text>
-              <Text style={{ fontSize: 14, color: "#666" }}>{item.staff_email}</Text>
+              <Text style={{ fontSize: 18, fontWeight: "bold", color: "#333", marginBottom: 10 }}>From: {item.staff_name}</Text>
+              <Text style={{ fontSize: 14, color: "#666", marginBottom: 10}}>{item.staff_email}</Text>
             </View>
 
             {/* Request Title */}

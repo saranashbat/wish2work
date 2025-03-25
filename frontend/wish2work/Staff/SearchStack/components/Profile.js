@@ -105,7 +105,7 @@ const StudentProfile = ({ route, navigation }) => {
 
         <TouchableOpacity 
         style={[styles.button, { backgroundColor: "#4CAF50", flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}
-        onPress={() => alert('Send request to student')}
+        onPress={()=>navigation.navigate("Request", {studentId: student_id, first_name: first_name, last_name: last_name})}
         >
         <FontAwesome name="paper-plane" size={18} color="white" style={{ marginRight: 8 }} />
         <Text style={styles.buttonText}>Send Request to Student</Text>

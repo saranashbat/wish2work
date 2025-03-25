@@ -5,7 +5,8 @@ import Search from './components/Search';
 import Profile from './components/Profile';
 import CourseSkill from './components/CourseSkill';
 import Availabilities from './components/Availabilities';
-
+import Request from './components/Request';
+import Request2 from './components/Request2';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +18,10 @@ const SearchStack = () => {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="CourseSkill" component={CourseSkill} />
       <Stack.Screen name="Availabilities" component={Availabilities} />
+      <Stack.Screen name="Request" component={Request} />
+      <Stack.Screen name="Request2" component={Request2} />
+
+
 
     </Stack.Navigator>
   );
