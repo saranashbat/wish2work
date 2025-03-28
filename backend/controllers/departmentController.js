@@ -120,7 +120,7 @@ const getStudentsByDepartmentId = async (req, res) => {
 
 const searchStudentsByDepartment = async (req, res) => {
   const departmentId = parseInt(req.params.id, 10); // Convert to number
-  const { name, skill, course, program, rating } = req.query; // Changed program_id → program (name)
+  const { query, rating } = req.query; // Use 'query' for searching
 
   if (isNaN(departmentId)) {
     return res.status(400).json({ message: "Invalid department ID" });
@@ -134,75 +134,78 @@ const searchStudentsByDepartment = async (req, res) => {
 
     let programIds = programs.map((p) => p.program_id);
 
-    // Search by program name
-    if (program) {
-      const matchingPrograms = await ProgramOfStudy.findAll({
-        where: { name: { [Op.like]: `%${program}%` }, department_id: departmentId }, // Ensure it's within the department
-      });
-
-      programIds = matchingPrograms.map((p) => p.program_id);
-    }
-
     // Initialize search conditions with department restriction
     let whereConditions = { program_id: { [Op.in]: programIds } };
 
-    // Search by name (first_name or last_name) within the department
-    if (name) {
-      whereConditions[Op.or] = [
-        { first_name: { [Op.like]: `%${name}%` } },
-        { last_name: { [Op.like]: `%${name}%` } },
-      ];
-    }
+    // If there's a query, we need to search for it in various fields
+    if (query) {
+      // Search by name (first_name or last_name)
+      const nameParts = query.split(" "); // Split the query by space
 
-    // Search by skill within the department
-    if (skill) {
-      const studentsWithSkills = await Skill.findAll({
+      let nameSearch = {};
+      if (nameParts.length === 1) {
+        // If only one part (e.g., "Sara")
+        nameSearch = {
+          [Op.or]: [
+            { first_name: { [Op.like]: `%${query}%` } },
+            { last_name: { [Op.like]: `%${query}%` } },
+          ],
+        };
+      } else if (nameParts.length === 2) {
+        // If two parts (e.g., "Sara Nashbat")
+        const [firstName, lastName] = nameParts;
+        nameSearch = {
+          [Op.or]: [
+            { first_name: { [Op.like]: `%${firstName}%` } },
+            { last_name: { [Op.like]: `%${lastName}%` } },
+          ],
+        };
+      }
+
+      // Search by skill (title or description)
+      const skillSearch = await Skill.findAll({
         where: {
           [Op.or]: [
-            { title: { [Op.like]: `%${skill}%` } },
-            { description: { [Op.like]: `%${skill}%` } },
+            { title: { [Op.like]: `%${query}%` } },
+            { description: { [Op.like]: `%${query}%` } },
           ],
         },
       });
+      const skillStudentIds = skillSearch.map((skill) => skill.student_id);
 
-      const studentIds = studentsWithSkills.map((skill) => skill.student_id);
-
-      if (studentIds.length > 0) {
-        whereConditions.student_id = whereConditions.student_id
-          ? { [Op.and]: [whereConditions.student_id, { [Op.in]: studentIds }] }
-          : { [Op.in]: studentIds };
-      } else {
-        whereConditions.student_id = [];
-      }
-    }
-
-    // Search by course within the department
-    if (course) {
-      const coursesWithName = await Course.findAll({
+      // Search by course name
+      const courseSearch = await Course.findAll({
         where: {
-          [Op.or]: [{ name: { [Op.like]: `%${course}%` } }],
+          name: { [Op.like]: `%${query}%` },
         },
       });
-
-      const courseIds = coursesWithName.map((course) => course.course_id);
-
+      const courseIds = courseSearch.map((course) => course.course_id);
       const studentsInCourses = await StudentCourse.findAll({
         where: { course_id: { [Op.in]: courseIds } },
         attributes: ["student_id"],
       });
-
       const studentIdsFromCourses = studentsInCourses.map((sc) => sc.student_id);
 
-      if (studentIdsFromCourses.length > 0) {
-        whereConditions.student_id = whereConditions.student_id
-          ? { [Op.and]: [whereConditions.student_id, { [Op.in]: studentIdsFromCourses }] }
-          : { [Op.in]: studentIdsFromCourses };
-      } else {
-        whereConditions.student_id = [];
+      // Combine all search conditions
+      if (skillStudentIds.length > 0) {
+        whereConditions[Op.or] = whereConditions[Op.or]
+          ? [...whereConditions[Op.or], { student_id: { [Op.in]: skillStudentIds } }]
+          : [{ student_id: { [Op.in]: skillStudentIds } }];
       }
+
+      if (studentIdsFromCourses.length > 0) {
+        whereConditions[Op.or] = whereConditions[Op.or]
+          ? [...whereConditions[Op.or], { student_id: { [Op.in]: studentIdsFromCourses } }]
+          : [{ student_id: { [Op.in]: studentIdsFromCourses } }];
+      }
+
+      // Apply name search condition if it's provided
+      whereConditions[Op.or] = whereConditions[Op.or]
+        ? [...whereConditions[Op.or], nameSearch]
+        : [nameSearch];
     }
 
-    // Fetch students within the department
+    // Fetch students based on the combined search conditions
     let students = await Student.findAll({
       where: whereConditions,
     });
@@ -221,6 +224,7 @@ const searchStudentsByDepartment = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 module.exports = {
   getDepartments,
