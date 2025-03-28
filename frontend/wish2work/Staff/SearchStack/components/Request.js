@@ -60,17 +60,27 @@ export default function Request({ route, navigation }) {
     }
   };
 
-  const handleSelectAvailability = (slot) => {
+  const handleSelectAvailability = (slot, selectedDate) => {
+    const formattedDate = format(selectedDate, "MMM dd"); // Get formatted month and day (e.g., "Mar 28")
+    const selectedMonth = format(selectedDate, "MMMM"); // Get the full month name (e.g., "March")
+    const selectedDay = format(selectedDate, "dd"); // Get the day of the month (e.g., "28")
+    const dayOfWeek = format(selectedDate, "EEEE"); // Get the day of the week (e.g., "Saturday")
+
+    // Navigate to the next screen with correct details
     navigation.navigate("Request2", {
       studentId,
       staffId: staffId, // Passing staff_id
       selectedTimeRange: {
         startTime: slot.startISO,
         endTime: slot.endISO,
-        formatted: slot.range
+        formatted: slot.range,
+        selectedMonth,  // Pass the full month name
+        selectedDay,    // Pass the day of the month
+        formattedDate,  // Pass the formatted "MMM dd" (e.g., "Mar 28")
+        dayOfWeek,      // Pass the day of the week (e.g., "Saturday")
       },
       first_name,
-      last_name
+      last_name,
     });
   };
 
@@ -101,7 +111,7 @@ export default function Request({ route, navigation }) {
                 <TouchableOpacity 
                   key={slot.id} 
                   style={styles.slotContainer}
-                  onPress={() => handleSelectAvailability(slot)}
+                  onPress={() => handleSelectAvailability(slot, date)} // Pass the date here
                 >
                   <View style={styles.slotTimeContainer}>
                     <Text style={styles.slotTimeText}>{slot.range}</Text>

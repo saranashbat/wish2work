@@ -6,7 +6,7 @@ const Course = require('../models/course'); // Import the Course model
 const Skill = require('../models/skill'); // Import the Course model
 const Request = require('../models/request');
 
-
+const { Op } = require('sequelize'); // For Sequelize operators
 
 const {sequelize} = require('../config/db'); // Import the Sequelize instance
 
@@ -216,3 +216,4 @@ exports.getRequestsForStudent = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+

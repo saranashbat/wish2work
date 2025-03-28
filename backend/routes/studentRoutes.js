@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const studentController = require('../controllers/studentController');
 
+
 // Get all students
 router.get('/students', studentController.getAllStudents);
 
@@ -31,6 +32,7 @@ router.get('/students/:id/courses', studentController.getCoursesForStudent);
 router.get('/students/:id/skills', studentController.getSkillsForStudent);
 
 router.get('/students/:id/requests', studentController.getRequestsForStudent);
+
 
 
 module.exports = router;

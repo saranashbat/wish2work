@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const departmentController = require('../controllers/departmentController');
 
+router.get('/departments/:id/students/search', departmentController.searchStudentsByDepartment);
+
 // Get all departments
 router.get('/departments', departmentController.getDepartments);
 

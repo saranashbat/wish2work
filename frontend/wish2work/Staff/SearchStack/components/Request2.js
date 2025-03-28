@@ -5,7 +5,14 @@ import { format, parseISO } from 'date-fns';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function Request2({ route, navigation }) {
-  const { studentId, staffId, selectedTimeRange, first_name, last_name } = route.params;
+  const { 
+    studentId, 
+    staffId, 
+    selectedTimeRange, 
+    first_name, 
+    last_name 
+  } = route.params;
+
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
 
@@ -57,9 +64,10 @@ export default function Request2({ route, navigation }) {
 
           <Text style={styles.label}>Selected Time</Text>
           <View style={styles.timeRangeContainer}>
+            {/* Displaying the selected full month, day of the month, and time range */}
             <Text style={styles.timeRange}>
-              {format(parseISO(selectedTimeRange.startTime), 'EEEE, MMM dd • hh:mm a')} - {'\n'}
-              {format(parseISO(selectedTimeRange.endTime), 'hh:mm a')}
+              {selectedTimeRange.dayOfWeek}, {selectedTimeRange.formattedDate} - {'\n'}
+              {format(parseISO(selectedTimeRange.startTime), 'hh:mm a')} to {format(parseISO(selectedTimeRange.endTime), 'hh:mm a')}
             </Text>
           </View>
 
@@ -89,8 +97,7 @@ export default function Request2({ route, navigation }) {
   );
 }
 
-// Keep the same styles from previous example for Request2
-
+// Styles for the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -148,10 +155,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 8,
     marginBottom: 20,
-    alignSelf: 'flex-start',
+    alignSelf: 'stretch',
     justifyContent: 'center',
     alignItems: 'center',
-    maxWidth: '80%',
+    width: '60%'
   },
   timeRange: {
     fontSize: 16,
