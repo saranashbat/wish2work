@@ -102,19 +102,10 @@ const Search = ({ route, navigation }) => {
         fetchSearchResults(text); // Call the search function immediately without debounce
     };
 
-    const sortByRating = async () => {
-        try {
-            setLoading(true);
-            const response = await fetch(`https://wish2work.onrender.com/api/departments/${department_id}/students/search?rating=high`);
-            if (!response.ok) throw new Error('Failed to fetch sorted students');
-            const sortedStudents = await response.json();
-            setStudents(sortedStudents);
-            setLoading(false);
-            setModalVisible(false); // Close the modal after sorting
-        } catch (err) {
-            setError(err.message);
-            setLoading(false);
-        }
+    const sortByRating = () => {
+        const sortedStudents = [...students].sort((a, b) => b.average_rating - a.average_rating);
+        setStudents(sortedStudents);
+        setModalVisible(false); // Close the modal after sorting
     };
 
     return (
@@ -198,20 +189,34 @@ const Search = ({ route, navigation }) => {
             </ScrollView>
 
             {/* Modal for sorting by rating */}
-            <Modal
-                transparent={true}
-                visible={modalVisible}
-                animationType="fade"
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Sort Results</Text>
-                        <Button title="Sort by Rating (High to Low)" onPress={sortByRating} />
-                        <Button title="Close" onPress={() => setModalVisible(false)} />
-                    </View>
-                </View>
-            </Modal>
+<Modal
+    transparent={true}
+    visible={modalVisible}
+    animationType="fade"
+    onRequestClose={() => setModalVisible(false)}
+>
+    <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Sort Results</Text>
+
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Ionicons name="star" size={20} color="#FFD700" />
+                <Ionicons name="arrow-up" size={20} color="#2C2F6B" />
+                <Button title="Sort by Rating" onPress={sortByRating} />
+            </View>
+
+            {/* Replaced Close Button with X Icon */}
+            <Ionicons 
+                name="close-circle" 
+                size={30} 
+                color="#2C2F6B" 
+                style={styles.closeIcon} 
+                onPress={() => setModalVisible(false)} 
+            />
+        </View>
+    </View>
+</Modal>
+
         </View>
     );
 };
@@ -332,7 +337,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 20,
         borderRadius: 10,
-        width: 300,
+        width: 250,
+        alignItems: 'center'
     },
     modalTitle: {
         fontSize: 18,
@@ -344,6 +350,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 20,
     },
+    closeIcon: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+    },
+    
 });
 
 export default Search;
