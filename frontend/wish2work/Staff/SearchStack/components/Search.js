@@ -8,7 +8,9 @@ import {
   ActivityIndicator, 
   ScrollView,
   Image,
-  Dimensions
+  Dimensions,
+  Modal,
+  Button
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -18,9 +20,12 @@ const { width } = Dimensions.get('window');
 const Search = ({ route, navigation }) => {
     const { department_id, department_name } = route.params;
     const [students, setStudents] = useState([]);
+    const [allStudents, setAllStudents] = useState([]);  // Store all students for resetting
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
     const [programNames, setProgramNames] = useState({});
+    const [modalVisible, setModalVisible] = useState(false); // State for modal visibility
 
     const fetchProgramName = async (programId) => {
         try {
@@ -39,7 +44,7 @@ const Search = ({ route, navigation }) => {
             try {
                 const response = await fetch(`https://wish2work.onrender.com/api/departments/${department_id}/students`);
                 if (!response.ok) throw new Error('Failed to fetch students');
-
+                
                 const studentData = await response.json();
                 if (!Array.isArray(studentData)) throw new Error('Data format is incorrect');
 
@@ -54,6 +59,7 @@ const Search = ({ route, navigation }) => {
 
                 setProgramNames(programMap);
                 setStudents(studentData);
+                setAllStudents(studentData);  // Store all students
                 setLoading(false);
             } catch (err) {
                 setError(err.message);
@@ -67,6 +73,48 @@ const Search = ({ route, navigation }) => {
     const formatRating = (rating) => {
         const rounded = Math.round(rating * 10) / 10;
         return `${rounded.toFixed(1)}/5.0`;
+    };
+
+    const fetchSearchResults = async (query) => {
+        if (query.length === 0) {
+            // If the search query is empty, show all students
+            setStudents(allStudents);
+            setError(null);  // Reset the error when search is empty
+            return;
+        }
+
+        setLoading(true);
+        setError(null);  // Reset error state before new search attempt
+        try {
+            const response = await fetch(`https://wish2work.onrender.com/api/departments/${department_id}/students/search?query=${query}`);
+            if (!response.ok) throw new Error('Failed to fetch students');
+            const data = await response.json();
+            setStudents(data);
+            setLoading(false);
+        } catch (err) {
+            setError(err.message);
+            setLoading(false);
+        }
+    };
+
+    const handleSearchChange = (text) => {
+        setSearchQuery(text); // Update the search query state
+        fetchSearchResults(text); // Call the search function immediately without debounce
+    };
+
+    const sortByRating = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch(`https://wish2work.onrender.com/api/departments/${department_id}/students/search?rating=high`);
+            if (!response.ok) throw new Error('Failed to fetch sorted students');
+            const sortedStudents = await response.json();
+            setStudents(sortedStudents);
+            setLoading(false);
+            setModalVisible(false); // Close the modal after sorting
+        } catch (err) {
+            setError(err.message);
+            setLoading(false);
+        }
     };
 
     return (
@@ -83,16 +131,23 @@ const Search = ({ route, navigation }) => {
             </View>
 
             <ScrollView style={styles.scrollContainer}>
+                {/* Added Text above the search bar */}
+                <Text style={styles.searchInstruction}>
+                    Search students by name, course, or skill
+                </Text>
+
                 <View style={styles.searchContainer}>
                     <View style={styles.searchBox}>
                         <TextInput
                             style={styles.input}
                             placeholder="Search students..."
                             placeholderTextColor="#888"
+                            value={searchQuery}
+                            onChangeText={handleSearchChange}
                         />
                         <Icon name="search" size={24} color="#888" style={styles.searchIcon} />
                     </View>
-                    <TouchableOpacity style={styles.filterButton}>
+                    <TouchableOpacity style={styles.filterButton} onPress={() => setModalVisible(true)}>
                         <Icon name="sliders" size={30} color="#2C2F6B" />
                     </TouchableOpacity>
                 </View>
@@ -141,6 +196,22 @@ const Search = ({ route, navigation }) => {
                     </View>
                 )}
             </ScrollView>
+
+            {/* Modal for sorting by rating */}
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                animationType="fade"
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Sort Results</Text>
+                        <Button title="Sort by Rating (High to Low)" onPress={sortByRating} />
+                        <Button title="Close" onPress={() => setModalVisible(false)} />
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -168,6 +239,13 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#2C2F6B',
+    },
+    searchInstruction: {
+        fontSize: 16,
+        color: '#888',
+        marginBottom: 10,
+        marginTop: 10,
+        fontWeight: '500',
     },
     searchContainer: {
         flexDirection: 'row',
@@ -235,20 +313,37 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 20,
     },
-    errorText: {
-        color: 'red',
-    },
-    resultsCount: {
-        fontSize: 16,
-        color: '#2C2F6B',
-        marginBottom: 16,
-        fontWeight: 'bold',
-    },
     ratingContainer: {
         flexDirection: 'row',
         alignItems: 'center',
     },
-    
+    resultsCount: {
+        fontSize: 16,
+        fontWeight: '500',
+        marginBottom: 16,
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        width: 300,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    errorText: {
+        color: 'red',
+        textAlign: 'center',
+        marginTop: 20,
+    },
 });
 
 export default Search;

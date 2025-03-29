@@ -211,7 +211,7 @@ const searchStudentsByDepartment = async (req, res) => {
     });
 
     // Sort by rating (high to low) if requested
-    if (rating === "high") {
+    if (rating == "high") {
       students = students.sort((a, b) => b.rating - a.rating);
     }
 

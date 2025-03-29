@@ -26,7 +26,6 @@ const CourseSkill = ({ route, navigation }) => {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        Alert.alert('Error', 'Failed to fetch data');
       }
     };
 
