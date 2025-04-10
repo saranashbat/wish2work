@@ -27,7 +27,7 @@ const Admin = sequelize.define('Admin', {
   },
 }, {
   tableName: 'admin', // Ensures the table is named 'admin'
-  timestamps: true, // Tracks createdAt and updatedAt
+  timestamps: false, // Tracks createdAt and updatedAt
 });
 
 module.exports = Admin;
