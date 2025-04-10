@@ -1,36 +1,33 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
-const StudentRating = sequelize.define('StudentRating', {
-  rating_id: {
+const Admin = sequelize.define('Admin', {
+  admin_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
     autoIncrement: true,
   },
-  staff_id: {
-    type: DataTypes.INTEGER,
+  first_name: {
+    type: DataTypes.STRING(100),
     allowNull: false,
   },
-  student_id: {
-    type: DataTypes.INTEGER,
+  last_name: {
+    type: DataTypes.STRING(100),
     allowNull: false,
   },
-  rating: {
-    type: DataTypes.INTEGER,
+  email: {
+    type: DataTypes.STRING(100),
     allowNull: false,
-    validate: {
-      min: 1,
-      max: 5,
-    },
+    unique: true, // Ensures no duplicate emails
   },
-  feedback: {
-    type: DataTypes.STRING(255),
-    allowNull: true, // Feedback is optional
+  phone_number: {
+    type: DataTypes.INTEGER,
+    allowNull: true, // Optional field
   },
 }, {
-  tableName: 'student_rating',
-  timestamps: true, // Assuming you want to track createdAt and updatedAt
+  tableName: 'admin', // Ensures the table is named 'admin'
+  timestamps: true, // Tracks createdAt and updatedAt
 });
 
-module.exports = StudentRating;
+module.exports = Admin;
