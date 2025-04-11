@@ -5,6 +5,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SearchStack from './SearchStack/SearchStack';
 import ViewRequestStack from './ViewRequestStack/ViewRequestStack';
+import StaffHome from './StaffHome.';
+import StaffProfile from './StaffProfile';
 
 const Tab = createBottomTabNavigator();
 
@@ -45,7 +47,7 @@ const StaffTabNav = () => {
       >
         <Tab.Screen
           name="Home"
-          component={() => <PlaceholderScreen name="Home" />}
+          component={StaffHome}
           options={{
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="home" color={color} size={35} />
@@ -72,7 +74,7 @@ const StaffTabNav = () => {
         />
         <Tab.Screen
           name="Profile"
-          component={() => <PlaceholderScreen name="Profile" />}
+          component={StaffProfile}
           options={{
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="account" color={color} size={35} />
