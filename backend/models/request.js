@@ -43,6 +43,10 @@ const Request = sequelize.define('Request', {
   availability_date: {
     type: DataTypes.DATEONLY, // Use DATEONLY for handling the availability date as a DATE type
     allowNull: false,
+  },
+  feedback: {
+    type: DataTypes.STRING(500), // Matches nvarchar(500)
+    allowNull: true,
   }
 }, {
   tableName: 'request',

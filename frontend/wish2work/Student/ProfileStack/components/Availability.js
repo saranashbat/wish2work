@@ -163,7 +163,7 @@ export default function Availability({ route, navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff'}}>
+    <View style={{ flex: 1}}>
       <View style={styles.header}>
         <Ionicons
           name="arrow-back"

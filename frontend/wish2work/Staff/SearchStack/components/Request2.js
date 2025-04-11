@@ -10,7 +10,7 @@ export default function Request2({ route, navigation }) {
     staffId, 
     selectedTimeRange, 
     first_name, 
-    last_name 
+    last_name, 
   } = route.params;
 
   const [title, setTitle] = useState('');
@@ -31,11 +31,13 @@ export default function Request2({ route, navigation }) {
         message: message,
         status: 'Pending',
         title: title,
-        availability_date: format(parseISO(selectedTimeRange.startTime), 'yyyy-MM-dd'),
+        availability_date: selectedTimeRange.yearMonthDate,
       };
 
       const response = await axios.post('https://wish2work.onrender.com/api/requests', requestPayload);
       if (response.status === 201) {
+        await axios.delete(`https://wish2work.onrender.com/api/availability/${selectedTimeRange.availabilityId}`);
+
         Alert.alert('Success', 'Request submitted successfully!');
         navigation.goBack();
       }

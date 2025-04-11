@@ -41,7 +41,7 @@ const ViewRequest = ({ navigation, route }) => {
             })
           );
 
-          setRequests(detailedRequests);
+          setRequests(detailedRequests.reverse());
         } catch (error) {
           console.error("Error fetching requests:", error);
         } finally {

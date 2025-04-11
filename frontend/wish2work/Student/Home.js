@@ -62,7 +62,7 @@ const Home = () => {
             
             <Text style={styles.modalSubTitle}>Frequently Asked Questions</Text>
             {faq.map((item, index) => (
-              <View key={index}>
+              <View style={{alignItems: "center"}} key={index}>
                 <Text style={styles.modalTextBold}>{item.question}</Text>
                 <Text style={styles.modalText}>{item.answer}</Text>
               </View>

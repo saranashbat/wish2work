@@ -227,7 +227,7 @@ const styles = {
     fontWeight: 'bold',
   },
   logoutButton: {
-    backgroundColor: '#FF6F61',
+    backgroundColor: '#D32F2F',
     padding: 15,
     borderRadius: 10,
     flexDirection: 'row',

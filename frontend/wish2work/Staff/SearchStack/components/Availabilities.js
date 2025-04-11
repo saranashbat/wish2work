@@ -39,7 +39,8 @@ export default function Availabilities({ route, navigation }) {
 
       setAvailability(structuredData);
     } catch (error) {
-      console.error("Error fetching availability:", error);
+      setAvailability({}); // Just in case
+
     }
   };
 

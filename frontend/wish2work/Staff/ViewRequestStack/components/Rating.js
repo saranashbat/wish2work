@@ -39,41 +39,64 @@ const Rating = () => {
         student_id: studentId,
         staff_id: staffId,
         rating_value: rating,
-        feedback: feedback
+        feedback: feedback,
       });
   
       if (ratingResponse.status === 201) {
         Alert.alert("Success", "Rating and feedback submitted successfully.");
-        
-        // Update the request rating with the new rating
+  
+        // Update the request's rating
         const requestUpdateResponse = await axios.put(
-          `https://wish2work.onrender.com/api/requests/${request_id}`, 
-          { rating: rating } // Assuming `rating` is the field to update
+          `https://wish2work.onrender.com/api/requests/${request_id}`,
+          { rating: rating, feedback: feedback }
         );
   
         if (requestUpdateResponse.status === 200) {
-          // Pass the status as success to the previous page
-          navigation.goBack();
+          // Step 1: Fetch all requests for the student
+          const requestsResponse = await axios.get(
+            `https://wish2work.onrender.com/api/students/${studentId}/requests`
+          );
+  
+          if (requestsResponse.status === 200) {
+            const allRequests = requestsResponse.data;
+  
+            // Step 2: Filter out requests with valid ratings
+            const ratedRequests = allRequests.filter((r) => r.rating && !isNaN(r.rating));
+            const total = ratedRequests.reduce((sum, r) => sum + parseFloat(r.rating), 0);
+            const avgRating = ratedRequests.length > 0 ? total / ratedRequests.length : 0;
+  
+            // Step 3: Update the student's average rating
+            const updateStudentResponse = await axios.put(
+              `https://wish2work.onrender.com/api/students/${studentId}`,
+              { average_rating: avgRating.toFixed(2) } // optional: round to 2 decimal places
+            );
+  
+            if (updateStudentResponse.status === 200) {
+              console.log("Student average rating updated to:", avgRating);
+              navigation.goBack();
+            } else {
+              Alert.alert("Error", "Failed to update student's average rating.");
+              navigation.goBack();
+            }
+          } else {
+            Alert.alert("Error", "Failed to fetch student requests.");
+            navigation.goBack();
+          }
         } else {
           Alert.alert("Error", "Failed to update the request rating.");
-          // Pass the status as fail to the previous page
           navigation.goBack();
         }
       } else {
         Alert.alert("Error", "Something went wrong. Please try again.");
-        // Pass the status as fail to the previous page
         navigation.goBack();
-        navigation.setParams({ rating_status: "fail" });
       }
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "Failed to submit rating. Please try again.");
-      
-      // Pass the status as fail to the previous page
+      Alert.alert("Error", "An unexpected error occurred. Please try again.");
       navigation.goBack();
-      navigation.setParams({ rating_status: "fail" });
     }
   };
+  
   
 
   return (
