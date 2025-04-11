@@ -18,12 +18,12 @@ const Home = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       Animated.sequence([
-        Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true }),
-        Animated.timing(fadeAnim, { toValue: 0, duration: 1000, delay: 2000, useNativeDriver: true }),
+        Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
+        Animated.timing(fadeAnim, { toValue: 0, duration: 500, delay: 1000, useNativeDriver: true }),
       ]).start(() => {
         setMessageIndex((prevIndex) => (prevIndex + 1) % motivationalPhrases.length);
       });
-    }, 4000);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 

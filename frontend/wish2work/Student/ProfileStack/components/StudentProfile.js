@@ -127,8 +127,9 @@ const StudentProfile = ({route, navigation}) => {
             paddingVertical: 5, 
             borderRadius: 5 
           }}
+          onPress={()=>navigation.navigate('Settings', {studentId: studentId, phone: student.phone_number})}
         >
-          <Text onPress={()=>navigation.navigate('Settings', {studentId: studentId, phone: student.phone_number})} style={{ color: 'white' }}>Settings</Text>
+          <Text  style={{ color: 'white' }}>Settings</Text>
         </TouchableOpacity>
       </View>
       <View style={{ padding: width * 0.05 }}>
